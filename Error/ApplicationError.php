@@ -60,20 +60,4 @@ class ApplicationError extends PhpError implements ErrorHandlerInterface
 
         return $this->response;
     }
-
-    /**
-     * Render error
-     *
-     * @param \Exception    $exception  
-     * @param bool          $displayDetails
-     * @param bool          $logErrors
-     * @param bool          $logErrorDetails
-     * @return string    
-     */
-    public static function render($exception, $request, $displayDetails = true, $logErrors = false, $logErrorDetails = false)
-    {
-        $obj = new Self($displayDetails,true);
-
-        return $obj->renderError($request,$exception,$displayDetails,$logErrors,$logErrorDetails);
-    }
 }

@@ -80,7 +80,7 @@ class PhpError
      * @param bool $logErrorDetails
      * @return string   
      */
-    public function renderError($request, $exception, $displayDetails, $logErrors, $logErrorDetails)
+    public function renderError($request, $exception, $displayDetails = true, $logErrors = true, $logErrorDetails = true)
     {
         $this->logErrors = $logErrors;
         $this->displayErrorDetails = $displayDetails;

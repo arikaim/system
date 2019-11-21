@@ -7,7 +7,7 @@
  * @license     http://www.arikaim.com/license
  * 
  */
-namespace Arikaim\Core\System\Error;
+namespace Arikaim\Core\System\Error\Renderer;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 
