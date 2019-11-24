@@ -125,7 +125,7 @@ class PhpError
             'type_text'     => Self::getErrorTypeText($error->getCode()),
             'file'          => $error->getFile(),
             'trace_text'    => $error->getTraceAsString(),
-            'message'       => $error->getmessage()
+            'message'       => $error->getMessage()
         ];
     }
 

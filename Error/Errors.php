@@ -9,14 +9,20 @@
  */
 namespace Arikaim\Core\System\Error;
 
+use Arikaim\Core\Interfaces\SystemErrorInterface;
+use Arikaim\Core\Interfaces\HtmlPageInterface;
 use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\System\Config;
+use Arikaim\Core\System\Error\PhpError;
+use Arikaim\Core\System\Error\Renderer\ConsoleErrorRenderer;
+use Arikaim\Core\System\Error\Renderer\HtmlPageErrorRenderer;
+use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
 
 /**
  * Errors
  */
-class Errors extends Collection
+class Errors extends Collection implements SystemErrorInterface
 {
     /**
      * Prefix
@@ -33,12 +39,51 @@ class Errors extends Collection
     private $errors;
 
     /**
+     * Html page
+     *
+     * @var HtmlPageInterface
+     */
+    private $page; 
+
+    /**
      * Constructor
      */
-    public function __construct() 
+    public function __construct(HtmlPageInterface $page) 
     {
         $this->errors = [];
+        $this->page = $page;
         $this->loadErrorsConfig();
+    }
+
+    /**
+     * Show system errors
+     *
+     * @param Request $request
+     * @param string|null $error
+     * @return string
+     */
+    public function renderSystemErrors($request, $error = null, $params = [])
+    {
+        if (empty($error) == false) {
+            $this->addError($error,$params);
+        }
+
+        $errors = [];
+        foreach ($this->getErrors() as $item) {
+            $errorDetails['type'] = E_ERROR;
+            $errorDetails['message'] = $item;
+            $errors[] = PhpError::toArray($errorDetails);
+        }
+           
+        if (System::isConsole() == true) {
+            $render = new ConsoleErrorRenderer();
+        } elseif (Request::isJsonContentType($request) == true) {
+            $render = new JsonErrorRenderer();
+        } else {
+            $render = new HtmlPageErrorRenderer($this->page);
+        }
+
+        return $render->render($errors);      
     }
 
     /**

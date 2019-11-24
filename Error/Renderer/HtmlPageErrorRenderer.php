@@ -29,7 +29,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
      * @param Page $page
      * @return void
      */
-    public function construct($page)
+    public function __construct($page)
     {
         $this->page = $page;
     }

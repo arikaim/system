@@ -10,7 +10,6 @@
 namespace Arikaim\Core\System\Error\Renderer;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
-
 use Arikaim\Core\System\Error\ErrorRendererInterface;
 
 /**
