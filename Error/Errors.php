@@ -10,7 +10,7 @@
 namespace Arikaim\Core\System\Error;
 
 use Arikaim\Core\Interfaces\SystemErrorInterface;
-use Arikaim\Core\Interfaces\HtmlPageInterface;
+use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\System\Config;
@@ -24,6 +24,13 @@ use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
  */
 class Errors extends Collection implements SystemErrorInterface
 {
+    /**
+     *  Error page names
+     */
+    const PAGE_NOT_FOUND         = 'page-not-found';
+    const SYSTEM_ERROR_PAGE      = 'system-error';
+    const APPLICATION_ERROR_PAGE = 'application-error';
+
     /**
      * Prefix
      *
@@ -198,5 +205,87 @@ class Errors extends Collection implements SystemErrorInterface
         $list = Config::loadJsonConfigFile('errors.json');         
         $this->data = $list['errors'];
         $this->prefix = $list['prefix'];   
+    }
+
+    /**
+     * Resolve error page name
+     *
+     * @param string $type
+     * @param string|null $extension
+     * @return string
+     */
+    public function resoveErrorPageName($type, $extension = null)
+    {
+        $pageName = (empty($extension) == true) ? 'system:' . $type : $extension . ">" . $type;  
+        
+        return ($this->has($pageName) == true) ? $pageName : 'system:' . $type;
+    }
+
+    /**
+     * Load system error page.
+     *
+     * @param Response $response
+     * @param array $data
+     * @param string|null $language
+     * @param string|null $extension
+     * @return Response
+     */
+    public function loadSystemError($response, $data = [], $language = null, $extension = null)
+    {        
+        $name = $this->page->resoveErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
+        $data = array_merge([
+            'errors' => $this->getErrors()
+        ],$data);
+
+        $response = $this->page->load($response,$name,$data,$language);   
+
+        return $response->withStatus(404); 
+    }
+
+    /**
+     * Load page not found error page.
+     *
+     * @param Response $response
+     * @param array $data
+     * @param string|null $language
+     * @param string|null $extension
+     * @return Response
+     */
+    public function loadPageNotFound($response, $data = [], $language = null, $extension = null)
+    {        
+        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);
+        $response = $this->page->load($response,$name,$data,$language);   
+
+        return $response->withStatus(404); 
+    }
+
+     /**
+     * Render page not found 
+     *
+     * @param array $data
+     * @param string|null $language
+     * @param string|null $extension
+     * @return Component
+     */
+    public function renderPageNotFound($data = [], $language = null, $extension = null)
+    {
+        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);
+
+        return $this->page->render($name,$data,$language);
+    }
+
+    /**
+     * Render application error
+     *
+     * @param array $data
+     * @param string|null $language
+     * @param string|null $extension
+     * @return Component
+     */
+    public function renderApplicationError($data = [], $language = null, $extension = null)
+    {
+        $name = $this->resoveErrorPageName(Self::APPLICATION_ERROR_PAGE,$extension);
+      
+        return $this->page->render($name,$data,$language);
     }
 }

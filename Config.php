@@ -66,6 +66,20 @@ class Config extends Collection
     }
     
     /**
+     * Reload config file
+     *
+     * @return void
+     */
+    public function reloadConfig()
+    {
+        if (is_null($this->cache) == false) {        
+            $this->cache->delete(strtolower($this->fileName));
+        }
+        
+        $this->data = $this->load($this->fileName);         
+    }
+
+    /**
      * Set config dir
      *
      * @param string $dir
