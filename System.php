@@ -175,11 +175,11 @@ class System
         // PDO extension
         $item['message'] = 'PDO php extension';     
         $item['status'] = (Self::hasPhpExtension('PDO') == true) ? 1 : 0;
-         
         array_push($info['items'],$item);
 
         // PDO driver
-        $pdoDriver = Arikaim::config('db/driver');
+        $pdoDriver = Arikaim::config()->getByPath('db/driver');
+       
         $item['message'] = "$pdoDriver PDO driver";
         $item['status'] = 0; // error
         if (Self::hasPdoDriver($pdoDriver) == true) {
@@ -206,7 +206,6 @@ class System
         $item['status'] = (Self::hasPhpExtension('gd') == true) ? 1 : 2;
           
         array_push($info['items'],$item);
-
         $info['errors'] = $errors;
         
         return $info;
@@ -261,9 +260,8 @@ class System
      * @return void
      */
     public static function writeLine($text, $eof = null)
-    {
-        $eof = ($eof == null) ? Self::getEof() : $eof;
-        echo $text . $eof;
+    {       
+        echo $text . "\n";
     }
 
     /**
@@ -297,5 +295,10 @@ class System
     public static function getDefaultOutput()
     {
         return (DIRECTORY_SEPARATOR == '\\') ? 'NUL' : '/dev/null';
+    }
+
+    public function getLastVersion($repository)
+    {
+
     }
 }

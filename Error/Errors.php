@@ -232,7 +232,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function loadSystemError($response, $data = [], $language = null, $extension = null)
     {        
-        $name = $this->page->resoveErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
+        $name = $this->resoveErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
         $data = array_merge([
             'errors' => $this->getErrors()
         ],$data);

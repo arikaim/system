@@ -11,6 +11,7 @@ namespace Arikaim\Core\System;
 
 use Arikaim\Core\System\Process;
 use Arikaim\Core\Utils\Curl;
+use Arikaim\Core\Utils\Path;
 
 /**
  * Composer commands
@@ -104,11 +105,12 @@ class Composer
      */
     public static function runCommand($command, $async = false, $realTimeOutput = false)
     {
-        $command = "php " . Path::ARIKAIM_BIN_PATH . 'composer.phar ' . $command;
+        $command = "php " . Path::BIN_PATH . 'composer.phar ' . $command;
         $env = [
-            'COMPOSER_HOME'      => Path::ARIKAIM_BIN_PATH,
+            'COMPOSER_HOME'      => Path::BIN_PATH,
             'COMPOSER_CACHE_DIR' => '/dev/null'
         ];
+
         $process = Process::create($command,$env);
         try {
             if ($async == true) {
@@ -122,8 +124,8 @@ class Composer
                 $process->run();
             }
             $output = $process->getOutput();
-        } catch(\Exception $e) {
-            return false;
+        } catch(\Exception $e) {            
+            return $e->getMessage();
         }
 
         return $output;

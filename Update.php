@@ -9,35 +9,52 @@
  */
 namespace Arikaim\Core\System;
 
-use Arikaim\Core\System\System;
 use Arikaim\Core\System\Composer;
 
 /**
- * Update Arikaim core
+ * Update package
  */
 class Update 
 {
     /**
-     * Update Arikaim core package
+     * Composer package name
      *
-     * @return bool
+     * @var string
      */
-    public function update()
+    protected $packageName;
+
+    /**
+     * Constructor
+     *
+     * @param string $packageName
+     */
+    public function __construct($packageName)
     {
-        $errors = 0;
-        $output = Composer::updatePackage(System::getCorePackageName(),true);
-      
-        return ($errors == 0); 
+        $this->packageName = $packageName;
     }
 
     /**
-     * Return core package info
+     * Update package
+     *
+     * @param boolean $async
+     * @param boolean $realTimeOutput
+     * @return mixed
+     */
+    public function update($async = false, $realTimeOutput = false)
+    {      
+        $output = Composer::updatePackage($this->packageName,$async,$realTimeOutput);  
+
+        return $output;
+    }
+
+    /**
+     * Return package info
      *
      * @return string
      */
     public function getCoreInfo()
     {
-        return Composer::runCommand('show ' . System::getCorePackageName());
+        return Composer::runCommand('show ' . $this->packageName);
     }
 
     /**

@@ -108,4 +108,9 @@ class Process
         $pid = (int)$pid;
         return trim(shell_exec("ps o comm= $pid"));
     }
+
+    public static function stop(float $timeout = 10, int $signal)
+    {
+        
+    }
 }
