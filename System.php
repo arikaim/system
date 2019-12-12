@@ -9,7 +9,6 @@
  */
 namespace Arikaim\Core\System;
 
-use Arikaim\Core\Arikaim;
 use Arikaim\Core\Utils\Utils;
 
 /**
@@ -35,16 +34,6 @@ class System
     }
 
     /**
-     * Return Arikaim version
-     *
-     * @return string
-     */
-    public static function getVersion() 
-    {
-        return ARIKAIM_VERSION;
-    }
-
-    /**
      * Get system info
      *
      * @return array
@@ -54,7 +43,6 @@ class System
         $os = posix_uname();   
         
         return [
-            'cms_version' => Self::getVersion(), 
             'php_version' => Self::getPhpVersion(),       
             'os_name'     => explode(' ',$os['sysname'])[0],
             'os_version'  => $os['release'],
@@ -125,8 +113,6 @@ class System
         return extension_loaded($phpExtensionName);
     }
 
-   
-    
     /**
      * Return true if PDO driver is installed
      *
@@ -149,67 +135,6 @@ class System
     {
         return (Self::hasPhpExtension('PDO') == false) ? [] : \PDO::getAvailableDrivers();
     }
-
-    /**
-     * Verify system requirements
-     *
-     * @return array
-     */
-    public static function checkSystemRequirements()
-    {
-        $info['items'] = [];
-        $info['errors']['messages'] = "";
-        $errors = [];
-
-        // php 5.6 or above
-        $phpVersion = Self::getPhpVersion();
-        $item['message'] = "PHP $phpVersion";
-        $item['status'] = 0; // error   
-        if (version_compare($phpVersion,'7.1','>=') == true) {               
-            $item['status'] = 1; // ok                    
-        } else {
-            array_push($errors,Arikaim::errors()->getError("PHP_VERSION_ERROR"));
-        }
-        array_push($info['items'],$item);
-
-        // PDO extension
-        $item['message'] = 'PDO php extension';     
-        $item['status'] = (Self::hasPhpExtension('PDO') == true) ? 1 : 0;
-        array_push($info['items'],$item);
-
-        // PDO driver
-        $pdoDriver = Arikaim::config()->getByPath('db/driver');
-       
-        $item['message'] = "$pdoDriver PDO driver";
-        $item['status'] = 0; // error
-        if (Self::hasPdoDriver($pdoDriver) == true) {
-            $item['status'] = 1; // ok
-        } else {
-            array_push($errors,Arikaim::errors()->getError("PDO_ERROR"));         
-        }
-        array_push($info['items'],$item);
-
-        // curl extension
-        $item['message'] = 'Curl PHP extension';
-        $item['status'] = (Self::hasPhpExtension('curl') == true) ? 1 : 2;
-           
-        array_push($info['items'],$item);
-
-        // zip extension
-        $item['message'] = 'Zip PHP extension';    
-        $item['status'] = (Self::hasPhpExtension('zip') == true) ? 1 : 2;
-
-        array_push($info['items'],$item);
-        
-        // GD extension 
-        $item['message'] = 'GD PHP extension';      
-        $item['status'] = (Self::hasPhpExtension('gd') == true) ? 1 : 2;
-          
-        array_push($info['items'],$item);
-        $info['errors'] = $errors;
-        
-        return $info;
-    }  
 
     /**
      * Return Stream wrappers
@@ -295,10 +220,5 @@ class System
     public static function getDefaultOutput()
     {
         return (DIRECTORY_SEPARATOR == '\\') ? 'NUL' : '/dev/null';
-    }
-
-    public function getLastVersion($repository)
-    {
-
     }
 }

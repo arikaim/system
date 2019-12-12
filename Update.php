@@ -83,4 +83,17 @@ class Update
 
         return $packages;
     }
+
+    /**
+     * Get last package vrsion
+     *
+     * @return string
+     */
+    public function getLastVersion()
+    {
+        $tokens = explode('/',$this->packageName);
+        $info = Composer::getPackageInfo($tokens[0],$tokens[1]);
+
+        return $info;
+    }
 }

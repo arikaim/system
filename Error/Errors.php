@@ -14,6 +14,8 @@ use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\System\Config;
+use Arikaim\Core\System\System;
+use Arikaim\Core\Http\Request;
 use Arikaim\Core\System\Error\PhpError;
 use Arikaim\Core\System\Error\Renderer\ConsoleErrorRenderer;
 use Arikaim\Core\System\Error\Renderer\HtmlPageErrorRenderer;

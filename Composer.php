@@ -12,6 +12,7 @@ namespace Arikaim\Core\System;
 use Arikaim\Core\System\Process;
 use Arikaim\Core\Utils\Curl;
 use Arikaim\Core\Utils\Path;
+use Arikaim\Core\Utils\File;
 
 /**
  * Composer commands
@@ -140,8 +141,32 @@ class Composer
      */
     public static function getPackageInfo($vendor, $package)
     {       
-        $info = Curl::get("https://packagist.org/packages/$vendor/$package.json");
+        $info = Curl::get("http://packagist.org/packages/$vendor/$package.json");
 
         return (empty($info) == true) ? null : json_decode($info,true);
+    }
+
+    /**
+     * Get installed package version
+     *
+     * @param string $path
+     * @param string $packageName
+     * @return string|false
+     */
+    public static function getInstalledPackageVersion($path, $packageName)
+    {
+        $filePath = $path . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
+        $packages = File::readJsonFile($filePath);
+        if ($packages === false) {
+            return false;
+        }
+
+        foreach ($packages as $package) {
+            if ($package['name'] == $packageName) {
+                return $package['version'];
+            };   
+        }
+
+        return false;
     }
 }
