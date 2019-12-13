@@ -106,12 +106,13 @@ class Config extends Collection
     /**
      * Load config file
      *
+     * @param boolean $useCache
      * @param string $fileName
      * @return array
      */
-    public function load($fileName) 
+    public function load($fileName, $useCache = true) 
     {       
-        if (is_null($this->cache) == false) {
+        if (is_null($this->cache) == false && $useCache == true) {
             $result = $this->cache->fetch(strtolower($fileName));
             if (is_array($result) == true) {
                 return $result;

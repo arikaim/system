@@ -85,15 +85,27 @@ class Update
     }
 
     /**
-     * Get last package vrsion
+     * Get last version
      *
      * @return string
      */
     public function getLastVersion()
     {
         $tokens = explode('/',$this->packageName);
-        $info = Composer::getPackageInfo($tokens[0],$tokens[1]);
-
-        return $info;
+        
+        return Composer::getLastVersion($tokens[0],$tokens[1]); 
     }
+
+    /**
+     * Get current installed package version
+     *
+     * @param string|null $path  App path
+     * @return string|false
+     */
+    public function getCurrentVersion($path = null)
+    {
+        $path = (empty($path) == true) ? ROOT_PATH . BASE_PATH : $path;
+
+        return Composer::getInstalledPackageVersion($path,$this->packageName); 
+    } 
 }

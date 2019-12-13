@@ -147,6 +147,25 @@ class Composer
     }
 
     /**
+     * Get package last version
+     *
+     * @param string $vendor
+     * @param string $package
+     * @return string|false
+     */
+    public static function getLastVersion($vendor, $package)
+    {
+        $info = Self::getPackageInfo($vendor,$package);
+
+        if (is_array($info) == true) {
+            $versions = array_keys($info['package']['versions']);
+            return (isset($versions[1]) == true) ? $versions[1] : $versions[0];
+        }
+
+        return false;
+    }
+
+    /**
      * Get installed package version
      *
      * @param string $path
