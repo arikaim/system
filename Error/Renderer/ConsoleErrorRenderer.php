@@ -31,8 +31,7 @@ class ConsoleErrorRenderer implements ErrorRendererInterface
         $output->writeln('Application error');
         $output->writeln('Message:  ' . $errorDetails['message']);
         $output->writeln('File:  ' . $errorDetails['file']);
-        $output->writeln('Type:  ' . $errorDetails['type_text']);
-        $output->writeln('Code:  ' . $errorDetails['type']);
+        $output->writeln('Type:  ' . $errorDetails['type_text']);      
         $output->writeln('Line:  ' . $errorDetails['line']);
         $output->writeln('Trace:  ' . $errorDetails['trace_text']);
     }
