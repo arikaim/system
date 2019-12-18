@@ -67,6 +67,16 @@ class Config extends Collection
     }
     
     /**
+     * Get config file name
+     *
+     * @return string
+     */
+    public function getConfigFile()
+    {
+        return $this->configDir . $this->fileName;
+    }
+
+    /**
      * Reload config file
      *
      * @return void
