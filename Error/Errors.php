@@ -34,13 +34,6 @@ class Errors extends Collection implements SystemErrorInterface
     const APPLICATION_ERROR_PAGE = 'application-error';
 
     /**
-     * Prefix
-     *
-     * @var string
-     */
-    private $prefix;
-
-    /**
      * Errors
      *
      * @var array
@@ -56,12 +49,15 @@ class Errors extends Collection implements SystemErrorInterface
 
     /**
      * Constructor
+     * 
+     * @param HtmlPageInterface $page
+     * @param array $systemErrors
      */
-    public function __construct(HtmlPageInterface $page) 
+    public function __construct(HtmlPageInterface $page, array $systemErrors) 
     {
         $this->errors = [];
+        $this->data = $systemErrors;
         $this->page = $page;
-        $this->loadErrorsConfig();
     }
 
     /**
@@ -164,7 +160,7 @@ class Errors extends Collection implements SystemErrorInterface
         $error = $this->get($errorCode,null);
         $error = (empty($error) == true) ? $this->get($default,null) : $error;
 
-        return (empty($error) == true) ? null : Text::render($this->prefix . $error['message'], $params);      
+        return (empty($error) == true) ? null : Text::render($error['message'], $params);      
     }
 
     /**
@@ -197,18 +193,6 @@ class Errors extends Collection implements SystemErrorInterface
         return "";
     }
     
-    /**
-     * Load error messages file.
-     *
-     * @return void
-     */
-    private function loadErrorsConfig() 
-    {
-        $list = Config::loadJsonConfigFile('errors.json');         
-        $this->data = $list['errors'];
-        $this->prefix = $list['prefix'];   
-    }
-
     /**
      * Resolve error page name
      *
