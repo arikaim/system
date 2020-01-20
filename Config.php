@@ -287,14 +287,8 @@ class Config extends Collection
     public function loadJsonConfigFile($fileName)
     {
         $data = File::readJsonFile($this->configDir . $fileName);
-        $data = (is_array($data) == true) ? $data : [];
-
-        $items = new Collection($data);
-        $items->addField("status",1);
-        $items->addField("order",0);
-        $items->addField("default",0);
-
-        return $items->toArray();
+        
+        return (is_array($data) == true) ? $data : [];
     }
 
     /**
