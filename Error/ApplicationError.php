@@ -55,9 +55,9 @@ class ApplicationError extends PhpError implements ErrorHandlerInterface
      */
     public function __invoke(ServerRequestInterface $request, Throwable $exception, bool $displayDetails, bool $logErrors, bool $logErrorDetails): ResponseInterface
     {
-        $output = $this->renderError($request,$exception,$displayDetails,$logErrors,$logErrorDetails);
-        $this->response->getBody()->write($output);
+        $this->renderError($request,$exception,$displayDetails,$logErrors,$logErrorDetails);
 
-        return $this->response;
+       // $this->response->getBody()->write($output);
+       // return $this->response;
     }
 }
