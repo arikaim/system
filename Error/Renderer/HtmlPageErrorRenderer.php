@@ -39,7 +39,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
      * Render error
      *
      * @param array $errorDetails
-     * @return void
+     * @return string
      */
     public function render($errorDetails)
     {                  
@@ -57,6 +57,6 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
             $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();  
         }
 
-        echo $output;        
+        return $output;        
     }
 }
