@@ -85,6 +85,19 @@ class Composer
     }
 
     /**
+     * Run install package command
+     *
+     * @param string $packageName
+     * @param boolean $async
+     * @param boolean $realTimeOutput
+     * @return mixed
+    */
+    public static function installPackage($packageName, $async = false, $realTimeOutput = false)
+    {
+        return Self::runCommand("install $packageName --no-dev",$async,$realTimeOutput);
+    }
+
+    /**
      * Run update command
      *
      * @param boolean $async
