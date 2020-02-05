@@ -20,14 +20,14 @@ use Arikaim\Core\Utils\File;
 class Composer
 {   
     /**
-     * Run require command
+     * Run require composer command
      *
      * @param string $packageName
      * @param boolean $async
      * @param boolean $realTimeOutput
      * @return mixed
      */
-    public static function requireCommand($packageName, $async = false, $realTimeOutput = false)
+    public static function requirePackage($packageName, $async = false, $realTimeOutput = false)
     {
         return Self::runCommand("require $packageName",$async,$realTimeOutput); 
     }
@@ -204,12 +204,10 @@ class Composer
      */
     public static function getInstalledPackageVersion($path, $packageName)
     {
-        $filePath = $path . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
-        $packages = File::readJsonFile($filePath);
+        $packages = Self::readInstalledPackages($path);
         if ($packages === false) {
             return false;
         }
-
         foreach ($packages as $package) {
             if ($package['name'] == $packageName) {
                 return $package['version'];
@@ -217,5 +215,71 @@ class Composer
         }
 
         return false;
+    }
+
+    /**
+     * Get local package info
+     *
+     * @param string $path
+     * @param array $packagesList
+     * @return array
+     */
+    public static function getLocalPackagesInfo($path, array $packagesList)
+    {
+        $packages = Self::readInstalledPackages($path);     
+        foreach ($packagesList as $item) {
+            $result[$item]['version'] = null;                  
+        }
+        
+        if ($packages === false) {
+            return $result;
+        }
+
+        foreach ($packages as $package) {
+            $key = array_search($package['name'],$packagesList);
+
+            if ($key !== false) {
+                $result[$package['name']]['version'] = $package['version'];
+            };   
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return true if composer package is installed
+     *
+     * @param string $path
+     * @param string|array $packageList
+     * @return boolean
+     */
+    public static function isInstalled($path, $packageList)
+    {
+        $packages = Self::readInstalledPackages($path);
+        if ($packages === false) {
+            return false;
+        }
+        $packageList = (is_string($packageList) == true) ? [$packageList] : $packageList;
+        
+        foreach ($packageList as $package) {          
+            if (Self::getInstalledPackageVersion($path,$package) === false) {
+                return false;
+            }
+        }
+       
+        return true;
+    }
+
+    /**
+     * Read local packages info file 
+     *
+     * @param string $path
+     * @return array|false
+     */
+    public static function readInstalledPackages($path)
+    {
+        $filePath = $path . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'composer' . DIRECTORY_SEPARATOR . 'installed.json';
+
+        return File::readJsonFile($filePath);       
     }
 }
