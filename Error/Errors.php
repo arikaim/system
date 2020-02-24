@@ -201,9 +201,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function resoveErrorPageName($type, $extension = null)
     {
-        $pageName = (empty($extension) == true) ? 'system:' . $type : $extension . ">" . $type;  
-        
-        return ($this->has($pageName) == true) ? $pageName : 'system:' . $type;
+        return (empty($extension) == true) ? 'system:' . $type : $extension . ">" . $type;  
     }
 
     /**
@@ -238,7 +236,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function loadPageNotFound($response, $data = [], $language = null, $extension = null)
     {        
-        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);
+        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);       
         $response = $this->page->load($response,$name,$data,$language);   
 
         return $response->withStatus(404); 
