@@ -201,7 +201,9 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public static function getErrorPageName($type, $extension = null)
     {
-        return (empty($extension) == true) ? 'system>' . $type : $extension . ">" . $type;  
+        $systemPageLocator = ($type == Self::PAGE_NOT_FOUND) ? ">" : ":";
+
+        return (empty($extension) == true) ? 'system' . $systemPageLocator . $type : $extension . ">" . $type;  
     }
 
     /**

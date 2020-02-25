@@ -49,7 +49,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
                     $output = $this->error->renderPageNotFound(['error' => $errorDetails])->getHtmlCode();
                     break;
                 }
-                default: {                   
+                default: {                                   
                     $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();            
                 }
             }
