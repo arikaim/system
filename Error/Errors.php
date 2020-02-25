@@ -201,7 +201,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public static function getErrorPageName($type, $extension = null)
     {
-        return (empty($extension) == true) ? 'system:' . $type : $extension . ">" . $type;  
+        return (empty($extension) == true) ? 'system>' . $type : $extension . ">" . $type;  
     }
 
     /**
@@ -242,14 +242,14 @@ class Errors extends Collection implements SystemErrorInterface
         return $response->withStatus(404); 
     }
 
-     /**
+    /**
      * Render page not found 
      *
      * @param array $data
      * @param string|null $language
      * @param string|null $extension
      * @return Component
-     */
+    */
     public function renderPageNotFound($data = [], $language = null, $extension = null)
     {
         $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);

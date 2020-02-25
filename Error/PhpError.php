@@ -93,7 +93,7 @@ class PhpError
         } else {
             $render = $this->htmlRenderer;
         }
-
+        
         return $render->render(Self::toArray($exception));      
     }
 
