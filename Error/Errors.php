@@ -199,7 +199,7 @@ class Errors extends Collection implements SystemErrorInterface
      * @param string|null $extension
      * @return string
      */
-    public function resoveErrorPageName($type, $extension = null)
+    public static function getErrorPageName($type, $extension = null)
     {
         return (empty($extension) == true) ? 'system:' . $type : $extension . ">" . $type;  
     }
@@ -215,7 +215,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function loadSystemError($response, $data = [], $language = null, $extension = null)
     {        
-        $name = $this->resoveErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
+        $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
         $data = array_merge([
             'errors' => $this->getErrors()
         ],$data);
@@ -236,7 +236,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function loadPageNotFound($response, $data = [], $language = null, $extension = null)
     {        
-        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);       
+        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);       
         $response = $this->page->load($response,$name,$data,$language);   
 
         return $response->withStatus(404); 
@@ -252,7 +252,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function renderPageNotFound($data = [], $language = null, $extension = null)
     {
-        $name = $this->resoveErrorPageName(Self::PAGE_NOT_FOUND,$extension);
+        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);
 
         return $this->page->render($name,$data,$language);
     }
@@ -267,7 +267,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function renderApplicationError($data = [], $language = null, $extension = null)
     {
-        $name = $this->resoveErrorPageName(Self::APPLICATION_ERROR_PAGE,$extension);
+        $name = Self::getErrorPageName(Self::APPLICATION_ERROR_PAGE,$extension);
         
         return $this->page->render($name,$data,$language);
     }
@@ -282,7 +282,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function renderSystemError($data = [], $language = null, $extension = null)
     {
-        $name = $this->resoveErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
+        $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
             
         return $this->page->render($name,['errors' => $data],$language);      
     }
