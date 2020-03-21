@@ -238,7 +238,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function loadPageNotFound($response, $data = [], $language = null, $extension = null)
     {        
-        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);       
+        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);           
         $response = $this->page->load($response,$name,$data,$language);   
 
         return $response->withStatus(404); 
@@ -255,7 +255,7 @@ class Errors extends Collection implements SystemErrorInterface
     public function renderPageNotFound($data = [], $language = null, $extension = null)
     {
         $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);
-
+    
         return $this->page->render($name,$data,$language);
     }
 

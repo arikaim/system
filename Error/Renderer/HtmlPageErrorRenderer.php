@@ -45,8 +45,8 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
     {                  
         try {   
             switch($errorDetails['base_class']) {
-                case 'HttpNotFoundException': {                                    
-                    $output = $this->error->renderPageNotFound(['error' => $errorDetails])->getHtmlCode();
+                case 'HttpNotFoundException': {       
+                    $output = $this->error->renderPageNotFound(['error' => $errorDetails])->getHtmlCode();                   
                     break;
                 }
                 default: {                                   
