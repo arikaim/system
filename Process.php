@@ -24,10 +24,10 @@ class Process
      * @param array $env
      * @param string $input
      * @param integer $timeout
-     * @param array $options
+     * @param array|null $options
      * @return void
      */
-    public static function create($command, array $env = null, $input = null, $timeout = 60, array $options = array())
+    public static function create($command, array $env = null, $input = null, $timeout = 60, $options = null)
     {
         $process = new SProcess($command,null,$env,$input,$timeout,$options);
         $process->enableOutput();
@@ -40,11 +40,14 @@ class Process
      *
      * @param string|array $command
      * @param array $env
+     * @param boolean $inheritEnv
      * @return mixed
      */
-    public static function run($command, array $env = [])
+    public static function run($command, array $env = [], $inheritEnv = true)
     {
         $process = Self::create($command,$env);
+        $process->inheritEnvironmentVariables($inheritEnv);
+
         $process->run();
 
         return ($process->isSuccessful() == true) ? $process->getOutput() : $process->getErrorOutput();          
@@ -106,11 +109,7 @@ class Process
     public static function getCommand($pid) 
     {
         $pid = (int)$pid;
-        return trim(shell_exec("ps o comm= $pid"));
-    }
 
-    public static function stop(float $timeout = 10, int $signal)
-    {
-        
+        return trim(shell_exec("ps o comm= $pid"));
     }
 }
