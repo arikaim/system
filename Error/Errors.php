@@ -218,10 +218,7 @@ class Errors extends Collection implements SystemErrorInterface
     public function loadSystemError($response, $data = [], $language = null, $extension = null)
     {        
         $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
-        $data = array_merge([
-            'errors' => $this->getErrors()
-        ],$data);
-
+        $data = (is_array($data) == true) ? array_merge(['errors' => $this->getErrors()],$data) : $this->getErrors();      
         $response = $this->page->load($response,$name,$data,$language);   
 
         return $response->withStatus(404); 
