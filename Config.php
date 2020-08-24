@@ -83,7 +83,7 @@ class Config extends Collection
      */
     public function reloadConfig()
     {
-        if (is_null($this->cache) == false) {        
+        if (\is_null($this->cache) == false) {        
             $this->cache->delete(strtolower($this->fileName));
         }
         
@@ -122,9 +122,9 @@ class Config extends Collection
      */
     public function load($fileName, $useCache = true) 
     {       
-        if (is_null($this->cache) == false && $useCache == true) {
+        if (\is_null($this->cache) == false && $useCache == true) {
             $result = $this->cache->fetch(strtolower($fileName));
-            if (is_array($result) == true) {
+            if (\is_array($result) == true) {
                 return $result;
             }
         }
@@ -132,7 +132,7 @@ class Config extends Collection
         $fullFileName = $this->configDir . $fileName;
        
         $result = (File::exists($fullFileName) == true) ? include($fullFileName) : [];    
-        if (is_null($this->cache) == false && (empty($result) == false)) {
+        if (\is_null($this->cache) == false && (empty($result) == false)) {
             $this->cache->save(strtolower($fileName),$result);
         } 
 
@@ -225,7 +225,7 @@ class Config extends Collection
         $maxTabs = $this->determineMaxTabs($data);
 
         foreach ($data as $key => $item) {
-            if (is_array($item) == true) {
+            if (\is_array($item) == true) {
                 $items .= (empty($items) == false) ? ",\n" : "";
                 $items .= $this->exportArray($item,$key);
             } else {
@@ -264,7 +264,7 @@ class Config extends Collection
         $fileName = (empty($fileName) == true) ? $this->fileName : $fileName;
         $data = (empty($data) == true) ? $this->data : $data;
 
-        if (is_null($this->cache) == false) {        
+        if (\is_null($this->cache) == false) {        
             $this->cache->delete(strtolower($fileName));
         }
        
@@ -288,7 +288,7 @@ class Config extends Collection
     {
         $data = File::readJsonFile($this->configDir . $fileName);
         
-        return (is_array($data) == true) ? $data : [];
+        return (\is_array($data) == true) ? $data : [];
     }
 
     /**
@@ -302,9 +302,9 @@ class Config extends Collection
     {
         $keys = [];
         foreach ($data as $key => $value) {
-            array_push($keys,strlen($key));
+            \array_push($keys,strlen($key));
         }
-        return ceil(max($keys) / $tabSize);
+        return \ceil(\max($keys) / $tabSize);
     }
 
     /**
@@ -316,7 +316,7 @@ class Config extends Collection
      */
     private function determineTabs($key, $tabSize = 4)
     {
-        return round(strlen($key) / $tabSize);
+        return \round(\strlen($key) / $tabSize);
     }
 
     /**
@@ -331,6 +331,7 @@ class Config extends Collection
         for ($index = 0; $index <= $count; $index++) {
             $result .="\t";
         }
+        
         return $result;
     }
 }

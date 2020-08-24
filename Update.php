@@ -74,7 +74,7 @@ class Update
         foreach ($list as $package) {          
             $info['version'] = $package['version'];
             $info['name'] = $package['name'];
-            array_push($packages,$info);
+            \array_push($packages,$info);
             $count++;
             if (($resultLength != null) && ($count >= $resultLength)) {               
                 return $packages;

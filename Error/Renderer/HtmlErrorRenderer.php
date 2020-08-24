@@ -11,6 +11,7 @@ namespace Arikaim\Core\System\Error\Renderer;
 
 use Arikaim\Core\Utils\Html;
 use Arikaim\Core\System\Error\ErrorRendererInterface;
+use Exception;
 
 /**
  * Render error
@@ -35,7 +36,7 @@ class HtmlErrorRenderer implements ErrorRendererInterface
                     $output = $this->renderSimplePage($errorDetails);               
                 }
             }           
-        } catch(\Exception $exception) {  
+        } catch(Exception $exception) {  
             $output = $this->renderSimplePage($errorDetails);        
         }
         

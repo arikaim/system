@@ -40,11 +40,11 @@ class System
      */
     public static function getSystemInfo() 
     {  
-        $os = posix_uname();   
+        $os = \posix_uname();   
         
         return [
             'php_version' => Self::getPhpVersion(),       
-            'os_name'     => explode(' ',$os['sysname'])[0],
+            'os_name'     => \explode(' ',$os['sysname'])[0],
             'os_version'  => $os['release'],
             'os_machine'  => $os['machine'],
             'os_node'     => $os['nodename']
@@ -59,7 +59,7 @@ class System
      */
     public static function setTimeLimit($time)
     {
-        set_time_limit($time);       
+        \set_time_limit($time);       
     }
 
     /**
@@ -69,7 +69,7 @@ class System
      */
     public static function getPhpVersion()
     {                   
-        return substr(phpversion(),0,6);
+        return \substr(\phpversion(),0,6);
     }
    
     /**
@@ -80,10 +80,10 @@ class System
     public function getPhpExtensions()
     {
         $data = [];
-        $items = get_loaded_extensions(false);
+        $items = \get_loaded_extensions(false);
         foreach ($items as $item) {
             $version = Utils::formatVersion(Self::getPhpExtensionVersion($item));   
-            array_push($data,['name' => $item,'version' => $version]);
+            \array_push($data,['name' => $item,'version' => $version]);
         }
 
         return $data;
@@ -99,7 +99,7 @@ class System
     {
         $ext = new \ReflectionExtension($phpExtensionName);
 
-        return substr($ext->getVersion(),0,6);
+        return \substr($ext->getVersion(),0,6);
     }
 
     /**
@@ -110,7 +110,7 @@ class System
      */
     public static function hasPhpExtension($phpExtensionName) 
     {
-        return extension_loaded($phpExtensionName);
+        return \extension_loaded($phpExtensionName);
     }
 
     /**
@@ -123,7 +123,7 @@ class System
     {
         $drivers = Self::getPdoDrivers();
 
-        return (is_array($drivers) == true) ? in_array($driverName,$drivers) : false;        
+        return (\is_array($drivers) == true) ? \in_array($driverName,$drivers) : false;        
     }
 
     /**
@@ -143,7 +143,7 @@ class System
      */
     public static function getStreamWrappers()
     {
-        return stream_get_wrappers();
+        return \stream_get_wrappers();
     }
 
     /**
@@ -154,7 +154,7 @@ class System
      */
     public static function hasStreamWrapper($protocol)
     {      
-        return in_array($protocol,Self::getStreamWrappers());
+        return \in_array($protocol,Self::getStreamWrappers());
     }
 
     /**
@@ -164,7 +164,7 @@ class System
      */
     public static function getBacktrace()
     {
-        return debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        return \debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
     }
 
     /**
@@ -174,7 +174,7 @@ class System
      */
     public static function isConsole()
     {
-        return (php_sapi_name() == "cli") ? true : false;          
+        return (\php_sapi_name() == "cli") ? true : false;          
     }   
 
     /**
@@ -197,13 +197,13 @@ class System
     public static function getOS() 
     {
         switch (true) {
-            case stristr(PHP_OS, 'DAR'): {
+            case \stristr(PHP_OS, 'DAR'): {
                 return Self::OSX;
             }
-            case stristr(PHP_OS, 'WIN'): {
+            case \stristr(PHP_OS, 'WIN'): {
                 return Self::WINDOWS;
             }
-            case stristr(PHP_OS, 'LINUX'): {
+            case \stristr(PHP_OS, 'LINUX'): {
                 return Self::LINUX;
             }
             default: {

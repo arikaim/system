@@ -105,7 +105,7 @@ class PhpError
      */
     public static function toArray($error)
     {
-        if (is_array($error) == true) {
+        if (\is_array($error) == true) {
             $errorDetails = [
                 'code'          => $error['type'],
                 'class'         => '',
@@ -114,13 +114,13 @@ class PhpError
                 'trace_text'    => ''               
             ];
 
-            return array_merge($error,$errorDetails);
+            return \array_merge($error,$errorDetails);
         } 
 
         return [
             'line'          => $error->getLine(),
             'code'          => $error->getCode(),
-            'class'         => get_class($error),
+            'class'         => \get_class($error),
             'base_class'    => Utils::getBaseClassName(get_class($error)),
             'type_text'     => Self::getErrorTypeText($error->getCode()),
             'file'          => $error->getFile(),
@@ -136,7 +136,7 @@ class PhpError
      */
     public static function getJsonError()
     {
-        switch (json_last_error()) {
+        switch (\json_last_error()) {
             case JSON_ERROR_NONE:
                 $error = null;
                 break;
@@ -189,7 +189,8 @@ class PhpError
      */
     public static function getPosixError()
     {
-        $err = posix_get_last_error();
-        return ($err > 0) ? posix_strerror($err) : '';
+        $err = \posix_get_last_error();
+        
+        return ($err > 0) ? \posix_strerror($err) : '';
     }
 }

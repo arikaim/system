@@ -100,7 +100,7 @@ class Errors extends Collection implements SystemErrorInterface
     public function addError($errorCode, $params = [])
     {       
         $message = ($this->hasErrorCode($errorCode) == true) ? $this->getError($errorCode,$params) : $errorCode;
-        array_push($this->errors,$message);
+        \array_push($this->errors,$message);
      
         return true;
     }
@@ -112,7 +112,7 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function count()
     {
-        return count($this->errors);
+        return \count($this->errors);
     }
 
     /**
@@ -218,7 +218,7 @@ class Errors extends Collection implements SystemErrorInterface
     public function loadSystemError($response, $data = [], $language = null, $extension = null)
     {        
         $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
-        $data = (is_array($data) == true) ? array_merge(['errors' => $this->getErrors()],$data) : $this->getErrors();      
+        $data = (\is_array($data) == true) ? \array_merge(['errors' => $this->getErrors()],$data) : $this->getErrors();      
         $response = $this->page->load($response,$name,$data,$language);   
 
         return $response->withStatus(404); 

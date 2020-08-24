@@ -9,6 +9,8 @@
 */
 namespace Arikaim\Core\System;
 
+use Exception;
+
 /**
  * Class loader
  */
@@ -64,7 +66,7 @@ class ClassLoader
      */
     public function register() 
     {
-        spl_autoload_register(array($this,'LoadClassFile'));
+        \spl_autoload_register(array($this,'LoadClassFile'));
     }
 
     /**
@@ -76,7 +78,7 @@ class ClassLoader
     public function LoadClassFile($class) 
     {
         $file = $this->getClassFileName($class);
-        if (file_exists($file) == true) {
+        if (\file_exists($file) == true) {
             require $file;
             return true;
         }
@@ -95,7 +97,7 @@ class ClassLoader
             return $this->rootPath;
         }
 
-        return (php_sapi_name() == "cli") ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];         
+        return (\php_sapi_name() == "cli") ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];         
     }
 
     /**
@@ -109,8 +111,8 @@ class ClassLoader
         $path = $this->getDocumentRoot() . $this->basePath;  
        
         $namespace = $this->getNamespace($class);
-        $tokens = explode('\\',$class);
-        $class = end($tokens);
+        $tokens = \explode('\\',$class);
+        $class = \end($tokens);
         $namespace = $this->namespaceToPath($namespace); 
      
         return $path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . ".php";       
@@ -124,7 +126,7 @@ class ClassLoader
      */
     public function getNamespace($class) 
     {           
-        return substr($class,0,strrpos($class,"\\"));       
+        return \substr($class,0,\strrpos($class,"\\"));       
     } 
     
     /**
@@ -136,16 +138,16 @@ class ClassLoader
      */
     public function namespaceToPath($namespace, $full = false) 
     {  
-        $namespace = ltrim($namespace,'\\');
-        $namespace = str_replace($this->coreNamespace,strtolower($this->coreNamespace),$namespace);
+        $namespace = \ltrim($namespace,'\\');
+        $namespace = \str_replace($this->coreNamespace,\strtolower($this->coreNamespace),$namespace);
     
         foreach ($this->packagesNamespace as $value) {
-            if (strpos($namespace,$value) !== false) {
-                $namespace = strtolower($namespace);
+            if (\strpos($namespace,$value) !== false) {
+                $namespace = \strtolower($namespace);
                 break;
             }            
         }
-        $namespace = str_replace("\\",DIRECTORY_SEPARATOR,$namespace);
+        $namespace = \str_replace("\\",DIRECTORY_SEPARATOR,$namespace);
         
         if ($full == true) {
             $path = $this->getDocumentRoot() . $this->basePath;
@@ -164,7 +166,7 @@ class ClassLoader
      */
     public function loadClassAlias($class, $alias)
     {
-        return (class_exists($class) == true) ? class_alias($class,$alias) : false;                
+        return (\class_exists($class) == true) ? \class_alias($class,$alias) : false;                
     }
 
     /**
@@ -177,7 +179,8 @@ class ClassLoader
     {                
         foreach ($items as $class => $alias) {      
             if ($this->loadClassAlias($class,$alias) == false) { 
-                throw new \Exception("Error load class alias for class ($class) alias ($alias)", 1);      
+                throw new Exception("Error load class alias for class ($class) alias ($alias)", 1);  
+                    
                 return false;
             }
         }

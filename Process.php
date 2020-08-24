@@ -76,7 +76,7 @@ class Process
      */
     public static function getCurrentUser()
     {
-        return posix_getpwuid(posix_geteuid());
+        return \posix_getpwuid(\posix_geteuid());
     }
 
     /**
@@ -97,7 +97,7 @@ class Process
      */
     public static function isRunning($pid) 
     {
-        return (file_exists("/proc/{$pid}") == true) ? true : false;         
+        return (\file_exists("/proc/{$pid}") == true) ? true : false;         
     }
 
     /**
@@ -110,6 +110,6 @@ class Process
     {
         $pid = (int)$pid;
 
-        return trim(shell_exec("ps o comm= $pid"));
+        return \trim(\shell_exec("ps o comm= $pid"));
     }
 }

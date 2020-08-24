@@ -13,6 +13,7 @@ use Arikaim\Core\System\Process;
 use Arikaim\Core\Utils\Curl;
 use Arikaim\Core\Utils\Path;
 use Arikaim\Core\Utils\File;
+use Exception;
 
 /**
  * Composer commands
@@ -138,7 +139,7 @@ class Composer
                 $process->run();
             }
             $output = $process->getOutput();
-        } catch(\Exception $e) {            
+        } catch(Exception $e) {            
             return $e->getMessage();
         }
 
@@ -156,7 +157,7 @@ class Composer
     {
         $info = Curl::get("https://packagist.org/packages/$vendor/$package.json");
 
-        return (empty($info) == true) ? null : json_decode($info,true);
+        return (empty($info) == true) ? null : \json_decode($info,true);
     }
 
     /**
@@ -169,9 +170,9 @@ class Composer
     public static function getPackageInfo($vendor, $package)
     {            
         $info = Curl::get("https://packagist.org/packages/$vendor/$package.json");
-        $data = json_decode($info,true);
+        $data = \json_decode($info,true);
 
-        return (is_array($data) == true) ? $data : null;       
+        return (\is_array($data) == true) ? $data : null;       
     }
 
     /**
@@ -188,7 +189,7 @@ class Composer
         if ($versions === false) {
             return false;
         }
-        $keys = array_keys($versions);
+        $keys = \array_keys($versions);
        
         return ($keys[0] == 'dev-master') ? $keys[1] : $keys[0];
     }
@@ -234,7 +235,7 @@ class Composer
         }
 
         foreach ($packages as $package) {
-            $key = array_search($package['name'],$packagesList);
+            $key = \array_search($package['name'],$packagesList);
 
             if ($key !== false) {
                 $result[$package['name']]['version'] = $package['version'];
@@ -257,7 +258,7 @@ class Composer
         if ($packages === false) {
             return false;
         }
-        $packageList = (is_string($packageList) == true) ? [$packageList] : $packageList;
+        $packageList = (\is_string($packageList) == true) ? [$packageList] : $packageList;
         
         foreach ($packageList as $package) {          
             if (Self::getInstalledPackageVersion($path,$package) === false) {

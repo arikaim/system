@@ -11,6 +11,7 @@ namespace Arikaim\Core\System\Error\Renderer;
 
 use Arikaim\Core\System\Error\ErrorRendererInterface;
 use Arikaim\Core\Interfaces\SystemErrorInterface;
+use Exception;
 
 /**
  * Render error
@@ -27,8 +28,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
     /**
      * Constructor
      *
-     * @param Page $page
-     * @return void
+     * @param SystemErrorInterface $error
      */
     public function __construct(SystemErrorInterface $error)
     {
@@ -53,7 +53,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
                     $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();            
                 }
             }
-        } catch(\Exception $exception) {           
+        } catch(Exception $exception) {           
             $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();  
         }
 
