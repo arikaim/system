@@ -65,7 +65,7 @@ class Update
      */
     public function getCorePackagesList($resultLength = null)
     {
-        $packageInfo = Composer::getPackageInfo("arikaim","core");
+        $packageInfo = Composer::getPackageInfo('arikaim','core');
         $list = $packageInfo['package']['versions'];
         unset($list['dev-master']);
         $packages = [];

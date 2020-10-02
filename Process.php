@@ -25,7 +25,7 @@ class Process
      * @param string $input
      * @param integer $timeout
      * @param array|null $options
-     * @return void
+     * @return object
      */
     public static function create($command, array $env = null, $input = null, $timeout = 60, $options = null)
     {
@@ -97,7 +97,7 @@ class Process
      */
     public static function isRunning($pid) 
     {
-        return (\file_exists("/proc/{$pid}") == true) ? true : false;         
+        return (\file_exists('/proc/{' . $pid . '}') == true) ? true : false;         
     }
 
     /**
@@ -110,6 +110,6 @@ class Process
     {
         $pid = (int)$pid;
 
-        return \trim(\shell_exec("ps o comm= $pid"));
+        return \trim(\shell_exec('ps o comm= ' . $pid));
     }
 }

@@ -97,7 +97,7 @@ class ClassLoader
             return $this->rootPath;
         }
 
-        return (\php_sapi_name() == "cli") ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];         
+        return (\php_sapi_name() == 'cli') ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];         
     }
 
     /**
@@ -115,7 +115,7 @@ class ClassLoader
         $class = \end($tokens);
         $namespace = $this->namespaceToPath($namespace); 
      
-        return $path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . ".php";       
+        return $path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . '.php';       
     }
 
     /**
@@ -126,7 +126,7 @@ class ClassLoader
      */
     public function getNamespace($class) 
     {           
-        return \substr($class,0,\strrpos($class,"\\"));       
+        return \substr($class,0,\strrpos($class,'\\'));       
     } 
     
     /**
@@ -147,7 +147,7 @@ class ClassLoader
                 break;
             }            
         }
-        $namespace = \str_replace("\\",DIRECTORY_SEPARATOR,$namespace);
+        $namespace = \str_replace('\\',DIRECTORY_SEPARATOR,$namespace);
         
         if ($full == true) {
             $path = $this->getDocumentRoot() . $this->basePath;
@@ -179,7 +179,7 @@ class ClassLoader
     {                
         foreach ($items as $class => $alias) {      
             if ($this->loadClassAlias($class,$alias) == false) { 
-                throw new Exception("Error load class alias for class ($class) alias ($alias)", 1);  
+                throw new Exception('Error load class alias for class (' . $class .') alias (' . $alias . ')',1);  
                     
                 return false;
             }

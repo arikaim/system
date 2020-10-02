@@ -84,7 +84,7 @@ class Config extends Collection
     public function reloadConfig()
     {
         if (\is_null($this->cache) == false) {        
-            $this->cache->delete(strtolower($this->fileName));
+            $this->cache->delete(\strtolower($this->fileName));
         }
         
         $this->data = $this->load($this->fileName);         
@@ -123,7 +123,7 @@ class Config extends Collection
     public function load($fileName, $useCache = true) 
     {       
         if (\is_null($this->cache) == false && $useCache == true) {
-            $result = $this->cache->fetch(strtolower($fileName));
+            $result = $this->cache->fetch(\strtolower($fileName));
             if (\is_array($result) == true) {
                 return $result;
             }
@@ -133,7 +133,7 @@ class Config extends Collection
        
         $result = (File::exists($fullFileName) == true) ? include($fullFileName) : [];    
         if (\is_null($this->cache) == false && (empty($result) == false)) {
-            $this->cache->save(strtolower($fileName),$result);
+            $this->cache->save(\strtolower($fileName),$result);
         } 
 
         return $result;            
@@ -184,11 +184,11 @@ class Config extends Collection
      */
     protected function exportArray(array $data, $arrayKey)
     {     
-        $items = "";  
+        $items = '';  
         $maxTabs = $this->determineMaxTabs($data);
     
         foreach ($data as $key => $value) {
-            $items .= (empty($items) == false) ? ",\n" : "";
+            $items .= (empty($items) == false) ? ",\n" : '';
             $value = Utils::getValueAsText($value);
             $tabs = $maxTabs - $this->determineTabs($key);
             $items .="\t\t'$key'" . $this->getTabs($tabs) . "=> $value";
@@ -226,10 +226,10 @@ class Config extends Collection
 
         foreach ($data as $key => $item) {
             if (\is_array($item) == true) {
-                $items .= (empty($items) == false) ? ",\n" : "";
+                $items .= (empty($items) == false) ? ",\n" : '';
                 $items .= $this->exportArray($item,$key);
             } else {
-                $items .= (empty($items) == false) ? ",\n" : "";
+                $items .= (empty($items) == false) ? ",\n" : '';
                 $items .= $this->exportItem($key,$item,$maxTabs);
             }
         }
@@ -246,7 +246,7 @@ class Config extends Collection
         $code = "<?php \n/**\n";
         $code .= "* Arikaim\n";
         $code .= "* @link        http://www.arikaim.com\n";
-        $code .= "* @copyright   Copyright (c) 2017-" . date("Y") . " Konstantin Atanasov <info@arikaim.com>\n";
+        $code .= "* @copyright   Copyright (c) 2017-" . date('Y') . " Konstantin Atanasov <info@arikaim.com>\n";
         $code .= "* @license     http://www.arikaim.com/license\n";
         $code .= "*/\n\n";
 
@@ -302,7 +302,7 @@ class Config extends Collection
     {
         $keys = [];
         foreach ($data as $key => $value) {
-            \array_push($keys,strlen($key));
+            \array_push($keys,\strlen($key));
         }
         return \ceil(\max($keys) / $tabSize);
     }
@@ -327,9 +327,9 @@ class Config extends Collection
      */
     private function getTabs($count)
     {
-        $result = "";
+        $result = '';
         for ($index = 0; $index <= $count; $index++) {
-            $result .="\t";
+            $result .= "\t";
         }
         
         return $result;

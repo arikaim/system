@@ -174,7 +174,7 @@ class System
      */
     public static function isConsole()
     {
-        return (\php_sapi_name() == "cli") ? true : false;          
+        return (\php_sapi_name() == 'cli') ? true : false;          
     }   
 
     /**
@@ -197,13 +197,13 @@ class System
     public static function getOS() 
     {
         switch (true) {
-            case \stristr(PHP_OS, 'DAR'): {
+            case \stristr(PHP_OS,'DAR'): {
                 return Self::OSX;
             }
-            case \stristr(PHP_OS, 'WIN'): {
+            case \stristr(PHP_OS,'WIN'): {
                 return Self::WINDOWS;
             }
-            case \stristr(PHP_OS, 'LINUX'): {
+            case \stristr(PHP_OS,'LINUX'): {
                 return Self::LINUX;
             }
             default: {

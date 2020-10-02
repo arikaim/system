@@ -30,7 +30,7 @@ class Composer
      */
     public static function requirePackage($packageName, $async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("require $packageName",$async,$realTimeOutput); 
+        return Self::runCommand('require ' . $packageName,$async,$realTimeOutput); 
     }
     
     /**
@@ -43,7 +43,7 @@ class Composer
      */
     public static function hasPackage($packageName, $async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("show $packageName",$async,$realTimeOutput); 
+        return Self::runCommand('show ' . $packageName,$async,$realTimeOutput); 
     }
 
     /**
@@ -56,7 +56,7 @@ class Composer
      */
     public static function show($packageName, $async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("show $packageName",$async,$realTimeOutput); 
+        return Self::runCommand('show '. $packageName,$async,$realTimeOutput); 
     }
 
     /**
@@ -69,7 +69,7 @@ class Composer
      */
     public static function remove($packageName,$async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("remove $packageName --no-dev",$async,$realTimeOutput); 
+        return Self::runCommand('remove ' . $packageName . ' --no-dev',$async,$realTimeOutput); 
     }
 
     /**
@@ -82,7 +82,7 @@ class Composer
      */
     public static function updatePackage($packageName, $async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("update $packageName --no-dev",$async,$realTimeOutput);
+        return Self::runCommand('update ' . $packageName . ' --no-dev',$async,$realTimeOutput);
     }
 
     /**
@@ -95,7 +95,7 @@ class Composer
     */
     public static function installPackage($packageName, $async = false, $realTimeOutput = false)
     {
-        return Self::runCommand("install $packageName --no-dev",$async,$realTimeOutput);
+        return Self::runCommand('install ' . $packageName . ' --no-dev',$async,$realTimeOutput);
     }
 
     /**
@@ -120,7 +120,7 @@ class Composer
      */
     public static function runCommand($command, $async = false, $realTimeOutput = false)
     {
-        $command = "php " . Path::BIN_PATH . 'composer.phar ' . $command;
+        $command = 'php ' . Path::BIN_PATH . 'composer.phar ' . $command;
         $env = [
             'COMPOSER_HOME'      => Path::BIN_PATH,
             'COMPOSER_CACHE_DIR' => '/dev/null'
@@ -155,7 +155,7 @@ class Composer
      */
     public static function getPackageData($vendor, $package)
     {
-        $info = Curl::get("https://packagist.org/packages/$vendor/$package.json");
+        $info = Curl::get('https://packagist.org/packages/' . $vendor .'/' . $package . '.json');
 
         return (empty($info) == true) ? null : \json_decode($info,true);
     }
@@ -169,7 +169,7 @@ class Composer
      */
     public static function getPackageInfo($vendor, $package)
     {            
-        $info = Curl::get("https://packagist.org/packages/$vendor/$package.json");
+        $info = Curl::get('https://packagist.org/packages/' . $vendor . '/' . $package . '.json');
         $data = \json_decode($info,true);
 
         return (\is_array($data) == true) ? $data : null;       

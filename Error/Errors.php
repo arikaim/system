@@ -9,8 +9,6 @@
  */
 namespace Arikaim\Core\System\Error;
 
-use Arikaim\Core\Interfaces\SystemErrorInterface;
-use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\System\System;
@@ -18,6 +16,9 @@ use Arikaim\Core\Http\Request;
 use Arikaim\Core\System\Error\PhpError;
 use Arikaim\Core\System\Error\Renderer\ConsoleErrorRenderer;
 use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
+
+use Arikaim\Core\Interfaces\SystemErrorInterface;
+use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 
 /**
  * Errors
@@ -172,24 +173,24 @@ class Errors extends Collection implements SystemErrorInterface
     {
         switch ($errorCode) {
             case UPLOAD_ERR_OK:
-                return "";// no error                
+                return '';// no error                
             case UPLOAD_ERR_INI_SIZE:
-                return $this->getError("UPLOAD_ERR_INI_SIZE");
+                return $this->getError('UPLOAD_ERR_INI_SIZE');
             case UPLOAD_ERR_FORM_SIZE:
-                return $this->getError("UPLOAD_ERR_FORM_SIZE");
+                return $this->getError('UPLOAD_ERR_FORM_SIZE');
             case UPLOAD_ERR_PARTIAL:
-                return $this->getError("UPLOAD_ERR_PARTIAL");
+                return $this->getError('UPLOAD_ERR_PARTIAL');
             case UPLOAD_ERR_NO_FILE:
-                return $this->getError("UPLOAD_ERR_NO_FILE");
+                return $this->getError('UPLOAD_ERR_NO_FILE');
             case UPLOAD_ERR_NO_TMP_DIR:
-                return $this->getError("UPLOAD_ERR_NO_TMP_DIR");
+                return $this->getError('UPLOAD_ERR_NO_TMP_DIR');
             case UPLOAD_ERR_CANT_WRITE:
-                return $this->getError("UPLOAD_ERR_CANT_WRITE");
+                return $this->getError('UPLOAD_ERR_CANT_WRITE');
             case UPLOAD_ERR_EXTENSION:
-                return $this->getError("UPLOAD_ERR_EXTENSION");
+                return $this->getError('UPLOAD_ERR_EXTENSION');
         }
 
-        return "";
+        return '';
     }
     
     /**
@@ -201,9 +202,9 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public static function getErrorPageName($type, $extension = null)
     {
-        $systemPageLocator = ($type == Self::PAGE_NOT_FOUND) ? ">" : ":";
+        $systemPageLocator = ($type == Self::PAGE_NOT_FOUND) ? '>' : ':';
 
-        return (empty($extension) == true) ? 'system' . $systemPageLocator . $type : $extension . ">" . $type;  
+        return (empty($extension) == true) ? 'system' . $systemPageLocator . $type : $extension . '>' . $type;  
     }
 
     /**
