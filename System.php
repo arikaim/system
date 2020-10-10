@@ -10,6 +10,7 @@
 namespace Arikaim\Core\System;
 
 use Arikaim\Core\Utils\Utils;
+use Arikaim\Core\System\NodeJs;
 
 /**
  * Core system helper class
@@ -34,6 +35,16 @@ class System
     }
 
     /**
+     * Get nodejs version
+     *
+     * @return string
+     */
+    public static function getNodeJsVersion() 
+    {
+        return NodeJs::getVersion();
+    }
+
+    /**
      * Get system info
      *
      * @return array
@@ -41,14 +52,35 @@ class System
     public static function getSystemInfo() 
     {  
         $os = \posix_uname();   
-        
         return [
-            'php_version' => Self::getPhpVersion(),       
-            'os_name'     => \explode(' ',$os['sysname'])[0],
-            'os_version'  => $os['release'],
-            'os_machine'  => $os['machine'],
-            'os_node'     => $os['nodename']
+            'php_version'    => Self::getPhpVersion(),       
+            'os_name'        => \explode(' ',$os['sysname'])[0],
+            'os_version'     => $os['release'],
+            'os_machine'     => $os['machine'],
+            'apache_version' => Self::getApacheVersion(),
+            'apache_modules' => Self::getApacheModules(),
+            'os_node'        => $os['nodename']
         ];       
+    }
+
+    /**
+     * Get apache version
+     *
+     * @return string|false
+    */
+    public static function getApacheVersion()
+    {
+        return (\function_exists('apache_get_version') == true) ? \apache_get_version() : false;
+    }
+
+    /**
+     * Get apache modules
+     *
+     * @return array
+     */
+    public static function getApacheModules()
+    {
+        return (\function_exists('apache_get_modules') == true) ? \apache_get_modules() : [];
     }
 
     /**
