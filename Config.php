@@ -20,6 +20,13 @@ use Arikaim\Core\Interfaces\CacheInterface;
 class Config extends Collection
 {
     /**
+     * Cache save time
+     *
+     * @var integer
+     */
+    public static $cacheSaveTime = 4;
+    
+    /**
      * Config file name
      *
      * @var string
@@ -60,6 +67,8 @@ class Config extends Collection
         $this->configDir = $dir;
         $data = $this->load($this->fileName);   
         
+        Self::$cacheSaveTime = \defined('CACHE_SAVE_TIME') ? \constant('CACHE_SAVE_TIME') : Self::$cacheSaveTime;
+
         parent::__construct($data);   
 
         $this->setComment('database settings','db');
@@ -133,7 +142,7 @@ class Config extends Collection
        
         $result = (File::exists($fullFileName) == true) ? include($fullFileName) : [];    
         if (\is_null($this->cache) == false && (empty($result) == false)) {
-            $this->cache->save(\strtolower($fileName),$result);
+            $this->cache->save(\strtolower($fileName),$result,Self::$cacheSaveTime);
         } 
 
         return $result;            

@@ -10,6 +10,8 @@
 namespace Arikaim\Core\System\Error;
 
 use Arikaim\Core\Utils\Text;
+use Arikaim\Core\Utils\File;
+use Arikaim\Core\Utils\Path;
 use Arikaim\Core\Collection\Collection;
 use Arikaim\Core\System\System;
 use Arikaim\Core\Http\Request;
@@ -57,6 +59,19 @@ class Errors extends Collection implements SystemErrorInterface
         $this->errors = [];
         $this->data = $systemErrors;
         $this->page = $page;
+    }
+
+    /**
+     * Load validation errors
+     *
+     * @param string $fileName
+     * @return array
+     */
+    public function loadValidationErrors($fileName = 'validation-errors.json')
+    {
+        $data = File::readJsonFile(Path::CONFIG_PATH . $fileName);
+        
+        return (\is_array($data) == true) ? $data : [];
     }
 
     /**
