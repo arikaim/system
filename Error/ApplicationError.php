@@ -60,4 +60,14 @@ class ApplicationError extends PhpError implements ErrorHandlerInterface
 
         return $this->response;
     }
+
+    /**
+     * Return response
+     *
+     * @return ResponseInterface $response
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
 }
