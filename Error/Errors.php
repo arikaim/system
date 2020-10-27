@@ -13,27 +13,14 @@ use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
 use Arikaim\Core\Collection\Collection;
-use Arikaim\Core\System\System;
-use Arikaim\Core\Http\Request;
-use Arikaim\Core\System\Error\PhpError;
-use Arikaim\Core\System\Error\Renderer\ConsoleErrorRenderer;
-use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
 
 use Arikaim\Core\Interfaces\SystemErrorInterface;
-use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 
 /**
  * Errors
  */
 class Errors extends Collection implements SystemErrorInterface
 {
-    /**
-     *  Error page names
-     */
-    const PAGE_NOT_FOUND         = 'page-not-found';
-    const SYSTEM_ERROR_PAGE      = 'system-error';
-    const APPLICATION_ERROR_PAGE = 'application-error';
-
     /**
      * Errors
      *
@@ -42,23 +29,15 @@ class Errors extends Collection implements SystemErrorInterface
     private $errors;
 
     /**
-     * Html page
-     *
-     * @var HtmlPageInterface
-     */
-    private $page; 
-
-    /**
      * Constructor
      * 
      * @param HtmlPageInterface $page
      * @param array $systemErrors
      */
-    public function __construct(HtmlPageInterface $page, array $systemErrors) 
+    public function __construct(array $systemErrors = []) 
     {
         $this->errors = [];
-        $this->data = $systemErrors;
-        $this->page = $page;
+        $this->data = $systemErrors;     
     }
 
     /**
@@ -72,38 +51,6 @@ class Errors extends Collection implements SystemErrorInterface
         $data = File::readJsonFile(Path::CONFIG_PATH . $fileName);
         
         return (\is_array($data) == true) ? $data : [];
-    }
-
-    /**
-     * Show system errors
-     *
-     * @param Request $request
-     * @param string|null $error
-     * @return string
-     */
-    public function renderSystemErrors($request, $error = null, $params = [])
-    {
-        if (empty($error) == false) {
-            $this->addError($error,$params);
-        }
-
-        $errors = [];
-        foreach ($this->getErrors() as $item) {
-            $errorDetails['type'] = E_ERROR;
-            $errorDetails['message'] = $item;
-            $errors[] = PhpError::toArray($errorDetails);
-        }
-           
-        if (System::isConsole() == true) {
-            $render = new ConsoleErrorRenderer();
-            return $render->render($errors);  
-        } elseif (Request::isJsonContentType($request) == true) {
-            $render = new JsonErrorRenderer();
-            return $render->render($errors);  
-        } 
-
-        $output = $this->renderSystemError($errors)->getHtmlCode();   
-        echo $output;        
     }
 
     /**
@@ -206,100 +153,5 @@ class Errors extends Collection implements SystemErrorInterface
         }
 
         return '';
-    }
-    
-    /**
-     * Resolve error page name
-     *
-     * @param string $type
-     * @param string|null $extension
-     * @return string
-     */
-    public static function getErrorPageName($type, $extension = null)
-    {
-        $systemPageLocator = ($type == Self::PAGE_NOT_FOUND) ? '>' : ':';
-
-        return (empty($extension) == true) ? 'system' . $systemPageLocator . $type : $extension . '>' . $type;  
-    }
-
-    /**
-     * Load system error page.
-     *
-     * @param Response $response
-     * @param array $data
-     * @param string|null $language
-     * @param string|null $extension
-     * @return Response
-     */
-    public function loadSystemError($response, $data = [], $language = null, $extension = null)
-    {        
-        $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
-        $data = (\is_array($data) == true) ? \array_merge(['errors' => $this->getErrors()],$data) : $this->getErrors(); 
-        
-        $response = $this->page->load($response,$name,$data,$language);   
-
-        return $response->withStatus(404); 
-    }
-
-    /**
-     * Load page not found error page.
-     *
-     * @param Response $response
-     * @param array $data
-     * @param string|null $language
-     * @param string|null $extension
-     * @return Response
-     */
-    public function loadPageNotFound($response, $data = [], $language = null, $extension = null)
-    {        
-        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);           
-        $response = $this->page->load($response,$name,$data,$language);   
-
-        return $response->withStatus(404); 
-    }
-
-    /**
-     * Render page not found 
-     *
-     * @param array $data
-     * @param string|null $language
-     * @param string|null $extension
-     * @return Component
-    */
-    public function renderPageNotFound($data = [], $language = null, $extension = null)
-    {
-        $name = Self::getErrorPageName(Self::PAGE_NOT_FOUND,$extension);
-    
-        return $this->page->render($name,$data,$language);
-    }
-
-    /**
-     * Render application error
-     *
-     * @param array $data
-     * @param string|null $language
-     * @param string|null $extension
-     * @return Component
-     */
-    public function renderApplicationError($data = [], $language = null, $extension = null)
-    {
-        $name = Self::getErrorPageName(Self::APPLICATION_ERROR_PAGE,$extension);
-        
-        return $this->page->render($name,$data,$language);
-    }
-
-    /**
-     * Render system error(s)
-     *
-     * @param array $data
-     * @param string|null $language
-     * @param string|null $extension
-     * @return Component
-     */
-    public function renderSystemError($data = [], $language = null, $extension = null)
-    {
-        $name = Self::getErrorPageName(Self::SYSTEM_ERROR_PAGE,$extension);
-            
-        return $this->page->render($name,['errors' => $data],$language);      
     }
 }

@@ -21,7 +21,7 @@ trait TaskErrors
      */
     public function getErrors()
     {
-        return (\is_array($this->errors) == true) ? $this->errors : [];
+        return $this->errors ?? [];
     }
 
     /**
@@ -31,7 +31,7 @@ trait TaskErrors
      */
     public function hasError()
     {
-        return !empty($this->getErrors());
+        return (count($this->getErrors()) > 0);
     }
 
     /**

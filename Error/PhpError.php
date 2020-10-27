@@ -9,11 +9,6 @@
  */
 namespace Arikaim\Core\System\Error;
 
-use Arikaim\Core\System\System;
-use Arikaim\Core\Http\Request;
-use Arikaim\Core\System\Error\Renderer\ConsoleErrorRenderer;
-use Arikaim\Core\System\Error\Renderer\HtmlErrorRenderer;
-use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
 use Arikaim\Core\Utils\Utils;
 
 /**
@@ -21,82 +16,6 @@ use Arikaim\Core\Utils\Utils;
  */
 class PhpError
 {
-    /**
-     * Show error details
-     *
-     * @var boolean
-     */
-    protected $displayErrorDetails;
-
-    /**
-     * Show error trace
-     *
-     * @var boolean
-     */
-    protected $displayErrorTrace;
-
-    /**
-     * Log errors
-     *
-     * @var boolean
-     */
-    protected $logErrors;
-
-    /**
-     * Log error details
-     *
-     * @var boolean
-     */
-    protected $logErrorDetails;
-
-    /**
-     * Html renderer
-     *
-     * @var ErrorRendererInterface
-     */
-    protected $htmlRenderer;
-
-    /**
-     * Constructor
-     *
-     * @param ErrorRendererInterface $htmlRenderer
-     * @param boolean $displayErrorDetails
-     * @param boolean $displayErrorTrace
-     */
-    public function __construct($htmlRenderer = null, $displayErrorDetails = true, $displayErrorTrace = true)
-    {
-        $this->displayErrorDetails = $displayErrorDetails;
-        $this->displayErrorTrace = $displayErrorTrace;   
-        $this->htmlRenderer = ($htmlRenderer == null) ? new HtmlErrorRenderer() : $htmlRenderer;
-    }
-
-    /**
-     * Render error
-     *
-     * @param ServerRequestInterface $request   The most recent Request object    
-     * @param \Throwable             $exception The caught Throwable object
-     * @param bool $displayDetails
-     * @param bool $logErrors
-     * @param bool $logErrorDetails
-     * @return string   
-     */
-    public function renderError($request, $exception, $displayDetails = true, $logErrors = true, $logErrorDetails = true)
-    {
-        $this->logErrors = $logErrors;
-        $this->displayErrorDetails = $displayDetails;
-        $this->logErrorDetails = $logErrorDetails;
-
-        if (System::isConsole() == true) {
-            $render = new ConsoleErrorRenderer();
-        } elseif (Request::isJsonContentType($request) == true) {
-            $render = new JsonErrorRenderer();
-        } else {
-            $render = $this->htmlRenderer;
-        }
-        
-        return $render->render(Self::toArray($exception));      
-    }
-
     /**
      * Convert error to array
      *

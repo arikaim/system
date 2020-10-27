@@ -18,16 +18,30 @@ use Arikaim\Core\System\Error\ErrorRendererInterface;
 class JsonErrorRenderer implements ErrorRendererInterface
 {
     /**
+     * Api response
+     *
+     * @var ApiResponse
+    */
+    protected $response;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->response = new ApiResponse();
+    }
+
+    /**
     * Render error
     *
     * @param array $errorDetails 
     * @return string
     */
     public function render($errorDetails)
-    {
-        $response = new ApiResponse();
-        $response->setError($errorDetails['message']);
+    {      
+        $this->response->setError($errorDetails['message']);
         
-        return $response->getResponseJson();
+        return $this->response->getResponseJson();
     }
 }

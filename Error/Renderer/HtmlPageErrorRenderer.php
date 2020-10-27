@@ -10,7 +10,7 @@
 namespace Arikaim\Core\System\Error\Renderer;
 
 use Arikaim\Core\System\Error\ErrorRendererInterface;
-use Arikaim\Core\Interfaces\SystemErrorInterface;
+use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 use Exception;
 
 /**
@@ -21,18 +21,18 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
     /**
      * Page reference
      *
-     * @var SystemErrorInterface
+     * @var HtmlPageInterface
      */
-    protected $error;
+    protected $page;
 
     /**
      * Constructor
      *
      * @param SystemErrorInterface $error
      */
-    public function __construct(SystemErrorInterface $error)
+    public function __construct(HtmlPageInterface $page)
     {
-        $this->error = $error;
+        $this->page = $page;
     }
 
     /**
@@ -42,19 +42,19 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
      * @return string
      */
     public function render($errorDetails)
-    {                  
+    {                 
         try {   
             switch($errorDetails['base_class']) {
                 case 'HttpNotFoundException': {       
-                    $output = $this->error->renderPageNotFound(['error' => $errorDetails])->getHtmlCode();                   
+                    $output = $this->page->renderPageNotFound($errorDetails)->getHtmlCode();                   
                     break;
                 }
                 default: {                                   
-                    $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();            
+                    $output = $this->page->renderApplicationError($errorDetails)->getHtmlCode();            
                 }
             }
         } catch(Exception $exception) {           
-            $output = $this->error->renderApplicationError(['error' => $errorDetails])->getHtmlCode();  
+            $output = $this->page->renderApplicationError($errorDetails)->getHtmlCode();  
         }
 
         return $output;        
