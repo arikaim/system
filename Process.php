@@ -97,7 +97,7 @@ class Process
      */
     public static function isRunning($pid) 
     {
-        return (\file_exists('/proc/{' . $pid . '}') == true) ? true : false;         
+        return (\file_exists('/proc/{' . $pid . '}') == true);    
     }
 
     /**
