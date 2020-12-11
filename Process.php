@@ -47,7 +47,7 @@ class Process
     {
         $process = Self::create($command,$env);
         $process->inheritEnvironmentVariables($inheritEnv);
-
+    
         $process->run();
 
         return ($process->isSuccessful() == true) ? $process->getOutput() : $process->getErrorOutput();          
@@ -65,8 +65,25 @@ class Process
     {
         $process = Self::create($command,$env);
         $process->start($callback);
-     
-        return $process->getOutput();
+    
+        return $process->getPid();
+    }
+
+    /**
+     * Run console command in backgorund
+     *
+     * @param array $command
+     * @param callable|null $callback
+     * @param array $env
+     * @return mixed
+    */
+    public static function startBackground($command, callable $callback = null, array $env = [])
+    {
+        $process = Self::create($command,$env);
+        $process->disableOutput();
+        $process->start($callback);
+
+        return $process->getPid();
     }
 
     /**
@@ -101,6 +118,17 @@ class Process
     }
 
     /**
+     * Return false if process not exist
+     *
+     * @param int $pid
+     * @return bool
+     */
+    public static function verifyProcess($pid)
+    {
+        return \posix_kill($pid,0);
+    }
+
+    /**
      * Get process command
      *
      * @param integer $pid
@@ -111,5 +139,15 @@ class Process
         $pid = (int)$pid;
 
         return \trim(\shell_exec('ps o comm= ' . $pid));
+    }
+
+    /**
+     * Get curret process pid
+     *
+     * @return mixed
+     */
+    public static function getCurrentPid()
+    {
+        return \posix_getpid();
     }
 }

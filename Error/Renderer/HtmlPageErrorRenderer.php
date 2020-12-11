@@ -50,11 +50,11 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
                     break;
                 }
                 default: {                                   
-                    $output = $this->page->renderApplicationError($errorDetails)->getHtmlCode();            
+                    $output = $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();            
                 }
             }
         } catch(Exception $exception) {           
-            $output = $this->page->renderApplicationError($errorDetails)->getHtmlCode();  
+            $output = $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();  
         }
 
         return $output;        
