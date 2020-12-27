@@ -301,6 +301,17 @@ class Config extends Collection
     }
 
     /**
+     * Check if file exist
+     *
+     * @param string $fileName
+     * @return boolean
+     */
+    public function hasConfigFile($fileName)
+    {
+        return  File::exists($this->configDir . $fileName);
+    }
+
+    /**
      * Get max tabs count
      *
      * @param array $data
