@@ -112,7 +112,7 @@ class Process
      * @param integer $pid
      * @return boolean
      */
-    public static function isRunning($pid) 
+    public static function isRunning($pid): bool 
     {
         return (\file_exists('/proc/{' . $pid . '}') == true);    
     }

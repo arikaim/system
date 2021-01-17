@@ -22,7 +22,7 @@ class NodeJs
      *
      * @return string|null
      */
-    public static function getVersion()
+    public static function getVersion(): ?string
     {
         return Self::runCommand(' -v');
     } 
@@ -32,7 +32,7 @@ class NodeJs
      *
      * @return boolean
      */
-    public static function isInstalled()
+    public static function isInstalled(): bool
     {
         return !empty(Self::getVersion());
     }
@@ -45,7 +45,7 @@ class NodeJs
      * @param boolean $realTimeOutput
      * @return mixed
      */
-    public static function runCommand($command, $async = false, $realTimeOutput = false)
+    public static function runCommand(string $command, bool $async = false, bool $realTimeOutput = false)
     {     
         $process = Process::create('node ' . $command,[]);
         try {

@@ -19,7 +19,7 @@ trait TaskErrors
      *
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors ?? [];
     }
@@ -29,7 +29,7 @@ trait TaskErrors
      *
      * @return boolean
      */
-    public function hasError()
+    public function hasError(): bool
     {
         return (count($this->getErrors()) > 0);
     }
@@ -40,7 +40,7 @@ trait TaskErrors
      * @param string $errorMessage
      * @return void
      */
-    public function addError($errorMessage)
+    public function addError(string $errorMessage): void
     {
         $this->errors[] = $errorMessage;
     }
@@ -50,7 +50,7 @@ trait TaskErrors
      *
      * @return void
      */
-    public function clearErrors()
+    public function clearErrors(): void
     {
         $this->errors = [];
     }

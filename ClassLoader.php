@@ -48,10 +48,11 @@ class ClassLoader
      * Constructor
      *
      * @param string $basePath
-     * @param string $rootPath
-     * @param string $corePath
+     * @param string|null $rootPath
+     * @param string|null $coreNamespace
+     * @param array $packagesNamespace
      */
-    public function __construct($basePath, $rootPath = null, $coreNamespace = null, $packagesNamespace = []) 
+    public function __construct(string $basePath, ?string $rootPath = null, ?string $coreNamespace = null, array $packagesNamespace = []) 
     {   
         $this->rootPath = $rootPath;
         $this->coreNamespace = $coreNamespace;
@@ -64,7 +65,7 @@ class ClassLoader
      * 
      * @return void
      */
-    public function register() 
+    public function register(): void 
     {
         \spl_autoload_register(array($this,'LoadClassFile'));
     }
@@ -75,7 +76,7 @@ class ClassLoader
      * @param string $class
      * @return bool
      */
-    public function LoadClassFile($class) 
+    public function LoadClassFile(string $class) 
     {
         $file = $this->getClassFileName($class);
         
@@ -87,7 +88,7 @@ class ClassLoader
      *
      * @return string
      */
-    public function getDocumentRoot()
+    public function getDocumentRoot(): string
     {
         if ($this->rootPath != null) {
             return $this->rootPath;
@@ -102,7 +103,7 @@ class ClassLoader
      * @param string $class
      * @return string
      */
-    public function getClassFileName($class) 
+    public function getClassFileName(string $class): string 
     {   
         $path = $this->getDocumentRoot() . $this->basePath;  
        
@@ -120,7 +121,7 @@ class ClassLoader
      * @param string $class
      * @return string
      */
-    public function getNamespace($class) 
+    public function getNamespace(string $class): string 
     {           
         return \substr($class,0,\strrpos($class,'\\'));       
     } 
@@ -132,7 +133,7 @@ class ClassLoader
      * @param boolean $full
      * @return string
      */
-    public function namespaceToPath($namespace, $full = false) 
+    public function namespaceToPath(string $namespace, bool $full = false): string 
     {  
         $namespace = \ltrim($namespace,'\\');
         $namespace = \str_replace($this->coreNamespace,\strtolower($this->coreNamespace),$namespace);
@@ -160,7 +161,7 @@ class ClassLoader
      * @param string $alias
      * @return bool
      */
-    public function loadClassAlias($class, $alias)
+    public function loadClassAlias(string $class, string $alias)
     {
         return (\class_exists($class) == true) ? \class_alias($class,$alias) : false;                
     }

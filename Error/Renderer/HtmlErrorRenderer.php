@@ -24,7 +24,7 @@ class HtmlErrorRenderer implements ErrorRendererInterface
      * @param array $errorDetails
      * @return string
      */
-    public function render($errorDetails)
+    public function render(array $errorDetails): string
     {       
         try {
             switch($errorDetails['base_class']) {
@@ -47,28 +47,24 @@ class HtmlErrorRenderer implements ErrorRendererInterface
      * Render HTML error page
      *
      * @param array $errorDetails
-     * @return void
+     * @return string
      */
-    protected function renderSimplePage($errorDetails)
+    protected function renderSimplePage(array $errorDetails): string
     {
         $html = $this->renderHtmlError($errorDetails);
     
         $title = 'Application Error';    
+
         Html::startDocument();
         Html::startHtml();
         Html::startHead();
         Html::appendHtml("<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>");
-        Html::title($title);
-        Html::style("body{margin:0;padding:30px;font:12px/1.5 Helvetica,Arial,Verdana," .
-            "sans-serif;}h1{margin:0;font-size:48px;font-weight:normal;line-height:48px;}strong{" .
-            "display:inline-block;width:65px;}");
+        Html::title($title);      
         Html::endHead();
         Html::startBody();
         Html::h1($title);
-
         Html::h2('Details');
         Html::appendHtml($html);
-
         Html::endBody();    
         Html::endHtml();
 
@@ -81,7 +77,7 @@ class HtmlErrorRenderer implements ErrorRendererInterface
      * @param array $errorDetails
      * @return string
      */
-    protected function renderHtmlError($errorDetails)
+    protected function renderHtmlError(array $errorDetails): string
     {
         Html::startDocument();
 

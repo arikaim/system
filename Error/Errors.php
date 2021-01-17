@@ -22,22 +22,38 @@ use Arikaim\Core\Interfaces\SystemErrorInterface;
 class Errors extends Collection implements SystemErrorInterface
 {
     /**
-     * Errors
+     * Errors file name
      *
-     * @var array
+     * @var string
      */
-    private $errors;
+    protected $fileName;
+    
+    /**
+     * Console errors filename
+     *
+     * @var string
+     */
+    protected $consoleFile;
+
+    /**
+     * Error file loaded
+     *
+     * @var bool
+    */
+    private $loaded;
 
     /**
      * Constructor
      * 
-     * @param HtmlPageInterface $page
      * @param array $systemErrors
      */
-    public function __construct(array $systemErrors = []) 
+    public function __construct(string $fileName, string $consoleFile, bool $consoleApp = false) 
     {
-        $this->errors = [];
-        $this->data = $systemErrors;     
+        //$this->data = $systemErrors; 
+        $this->fileName = $fileName;
+        $this->consoleFile = $consoleFile;
+        $this->consoleApp = $consoleApp;
+        $this->loaded = false;
     }
 
     /**
@@ -46,7 +62,7 @@ class Errors extends Collection implements SystemErrorInterface
      * @param string $fileName
      * @return array
      */
-    public function loadValidationErrors($fileName = 'validation-errors.json')
+    public function loadValidationErrors($fileName = 'validation-errors.json'): array
     {
         $data = File::readJsonFile(Path::CONFIG_PATH . $fileName);
         
@@ -54,38 +70,23 @@ class Errors extends Collection implements SystemErrorInterface
     }
 
     /**
-     * Add error
+     * Load erros
      *
-     * @param string $errorCode
-     * @param array $params
-     * @return bool
+     * @return void
      */
-    public function addError($errorCode, $params = [])
-    {       
-        $message = ($this->hasErrorCode($errorCode) == true) ? $this->getError($errorCode,$params) : $errorCode;
-        \array_push($this->errors,$message);
-     
-        return true;
-    }
-    
-    /**
-     * Ger errors count
-     *
-     * @return integer
-     */
-    public function count()
+    protected function loadErrors(): void 
     {
-        return \count($this->errors);
-    }
+        $errors = File::readJsonFile($this->fileName);
+        $errors = ($errors === false) ? [] : $errors;
+        
+        if ($this->consoleApp == true) {
+            $consoleErrors = File::readJsonFile($this->consoleFile);
+            $consoleErrors = ($consoleErrors === false) ? [] : $consoleErrors;
+            $errors = \array_merge($errors,$consoleErrors);
+        } 
 
-    /**
-     * Return true if have error
-     *
-     * @return boolean
-     */
-    public function hasError()
-    {       
-        return ($this->count() > 0) ? true : false;         
+        $this->data = $errors;
+        $this->loaded = true;
     }
 
     /**
@@ -94,19 +95,13 @@ class Errors extends Collection implements SystemErrorInterface
      * @param string $code
      * @return boolean
      */
-    public function hasErrorCode($code)
+    public function hasErrorCode(string $code): bool
     {
-        return $this->has($code);
-    }
+        if ($this->loaded == false) {
+            $this->loadErrors();
+        }
 
-    /**
-     * Get errors list
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->errors;
+        return $this->has($code);
     }
 
     /**
@@ -115,14 +110,18 @@ class Errors extends Collection implements SystemErrorInterface
      * @param string $errorCode
      * @param string|null $default
      * @param array $params
-     * @return string
+     * @return string|null
      */
-    public function getError($errorCode, $params = [], $default = 'UNKNOWN_ERROR') 
+    public function getError(string $errorCode, array $params = [], ?string $default = 'UNKNOWN_ERROR'): ?string 
     {
+        if ($this->loaded == false) {
+            $this->loadErrors();
+        }
+
         $error = $this->get($errorCode,null);
         $error = (empty($error) == true) ? $this->get($default,null) : $error;
 
-        return (empty($error) == true) ? null : Text::render($error['message'], $params);      
+        return (empty($error) == true) ? null : Text::render($error['message'],$params);      
     }
 
     /**
@@ -131,7 +130,7 @@ class Errors extends Collection implements SystemErrorInterface
      * @param integer $errorCode
      * @return string
      */
-    public function getUplaodFileError($errorCode)
+    public function getUplaodFileError($errorCode): string
     {
         switch ($errorCode) {
             case UPLOAD_ERR_OK:

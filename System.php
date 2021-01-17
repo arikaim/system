@@ -38,9 +38,9 @@ class System
     /**
      * Get nodejs version
      *
-     * @return string
+     * @return string:null
      */
-    public static function getNodeJsVersion() 
+    public static function getNodeJsVersion(): ?string 
     {
         return NodeJs::getVersion();
     }
@@ -50,7 +50,7 @@ class System
      *
      * @return array
      */
-    public static function getSystemInfo() 
+    public static function getSystemInfo(): array 
     {  
         $os = \posix_uname();   
         return [
@@ -67,11 +67,11 @@ class System
     /**
      * Get apache version
      *
-     * @return string|false
+     * @return string|null
     */
-    public static function getApacheVersion()
+    public static function getApacheVersion(): ?string
     {
-        return (\function_exists('apache_get_version') == true) ? \apache_get_version() : false;
+        return (\function_exists('apache_get_version') == true) ? \apache_get_version() : null;
     }
 
     /**
@@ -79,7 +79,7 @@ class System
      *
      * @return array
      */
-    public static function getApacheModules()
+    public static function getApacheModules(): array
     {
         return (\function_exists('apache_get_modules') == true) ? \apache_get_modules() : [];
     }
@@ -90,7 +90,7 @@ class System
      * @param integer $time
      * @return void
      */
-    public static function setTimeLimit($time)
+    public static function setTimeLimit($time): void
     {
         \set_time_limit($time);       
     }
@@ -100,7 +100,7 @@ class System
      *
      * @return string
      */
-    public static function getPhpVersion()
+    public static function getPhpVersion(): string
     {                   
         return \substr(\phpversion(),0,6);
     }
@@ -110,7 +110,7 @@ class System
      *
      * @return array
      */
-    public function getPhpExtensions()
+    public function getPhpExtensions(): array
     {
         $data = [];
         $items = \get_loaded_extensions(false);
@@ -138,9 +138,9 @@ class System
      * Return php extension version
      *
      * @param string $phpExtensionName
-     * @return string
+     * @return string|null
      */
-    public static function getPhpExtensionVersion($phpExtensionName)
+    public static function getPhpExtensionVersion(string $phpExtensionName): ?string
     {
         $ext = new \ReflectionExtension($phpExtensionName);
 
@@ -153,7 +153,7 @@ class System
      * @param string $phpExtensionName
      * @return boolean
      */
-    public static function hasPhpExtension($phpExtensionName) 
+    public static function hasPhpExtension(string $phpExtensionName) 
     {
         return \extension_loaded($phpExtensionName);
     }
@@ -164,7 +164,7 @@ class System
      * @param string $driverName
      * @return boolean
      */
-    public static function hasPdoDriver($driverName)
+    public static function hasPdoDriver(string $driverName): bool
     {
         $drivers = Self::getPdoDrivers();
 
@@ -186,7 +186,7 @@ class System
      *
      * @return array
      */
-    public static function getStreamWrappers()
+    public static function getStreamWrappers(): array
     {
         return \stream_get_wrappers();
     }
@@ -197,7 +197,7 @@ class System
      * @param string $protocol
      * @return boolean
      */
-    public static function hasStreamWrapper($protocol)
+    public static function hasStreamWrapper(string $protocol): bool
     {      
         return \in_array($protocol,Self::getStreamWrappers());
     }
@@ -217,21 +217,24 @@ class System
      *
      * @return boolean
      */
-    public static function isConsole()
+    public static function isConsole(): bool
     {
-        return (\php_sapi_name() == 'cli') ? true : false;          
+        return (\php_sapi_name() == 'cli');    
     }   
 
     /**
      * Output text
      *
-     * @param string $text
-     * @param string $eof
+     * @param string|null $text
+     * @param string|null $eof
      * @return void
      */
-    public static function writeLine($text, $eof = null)
+    public static function writeLine(?string $text, $eof = null): void
     {       
-        echo $text . "\n";
+        $eof = $eof ?? "\n";
+        $text = $text ?? '';
+
+        echo $text . $eof;
     }
 
     /**
@@ -239,7 +242,7 @@ class System
      *
      * @return integer
      */
-    public static function getOS() 
+    public static function getOS(): int 
     {
         switch (true) {
             case \stristr(PHP_OS,'DAR'): {
@@ -262,7 +265,7 @@ class System
      *
      * @return string
      */
-    public static function getDefaultOutput()
+    public static function getDefaultOutput(): string
     {
         return (DIRECTORY_SEPARATOR == '\\') ? 'NUL' : '/dev/null';
     }

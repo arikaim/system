@@ -9,6 +9,8 @@
 */
 namespace Arikaim\Core\System\Error;
 
+use Throwable;
+
 /**
  * Error handler interface
  */
@@ -20,9 +22,9 @@ interface ErrorHandlerInterface
     /**
      * Render error
      *
-     * @param \Throwable  $exception The caught Throwable object
+     * @param Throwable  $exception The caught Throwable object
      * @param string $renderType   
      * @return string   
      */
-    public function renderError($exception, $renderType);
+    public function renderError(Throwable $exception, string $renderType): string;
 }

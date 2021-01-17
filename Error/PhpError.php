@@ -22,7 +22,7 @@ class PhpError
      * @param \Throwable|array $error
      * @return array
      */
-    public static function toArray($error)
+    public static function toArray($error): array
     {
         if (\is_array($error) == true) {
             $errorDetails = [
@@ -53,7 +53,7 @@ class PhpError
      *
      * @return string
      */
-    public static function getJsonError()
+    public static function getJsonError(): string
     {
         switch (\json_last_error()) {
             case JSON_ERROR_NONE:
@@ -88,7 +88,7 @@ class PhpError
      * @param integer $type
      * @return string
      */
-    public static function getErrorTypeText($type)
+    public static function getErrorTypeText($type): string
     {
         $errorTypeText = [
             E_ERROR      => 'Fatal run-time error',
@@ -98,13 +98,13 @@ class PhpError
             E_CORE_ERROR => 'Fatal error'
         ];
 
-        return (isset($errorTypeText[$type]) == true) ? $errorTypeText[$type] : 'Run-time error';
+        return $errorTypeText[$type] ?? 'Run-time error';
     }
 
     /**
      * Get posix error
      *
-     * @return void
+     * @return mixed
      */
     public static function getPosixError()
     {

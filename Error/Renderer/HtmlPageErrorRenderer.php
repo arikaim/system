@@ -41,7 +41,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
      * @param array $errorDetails
      * @return string
      */
-    public function render($errorDetails)
+    public function render(array $errorDetails): string
     {                 
         try {   
             switch($errorDetails['base_class']) {

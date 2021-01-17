@@ -57,10 +57,11 @@ class Config extends Collection
     /**
      * Constructor
      *
-     * @param string $fileName
-     * @param array|null $cache
+     * @param string|null $fileName
+     * @param CacheInterface|null $cache
+     * @param string $dir
      */
-    public function __construct($fileName = null, CacheInterface $cache = null, $dir) 
+    public function __construct(?string $fileName = null, CacheInterface $cache = null, string $dir) 
     {       
         $this->cache = $cache;
         $this->fileName = (empty($fileName) == true) ? 'config.php' : $fileName;
@@ -80,7 +81,7 @@ class Config extends Collection
      *
      * @return string
      */
-    public function getConfigFile()
+    public function getConfigFile(): string
     {
         return $this->configDir . $this->fileName;
     }
@@ -90,7 +91,7 @@ class Config extends Collection
      *
      * @return void
      */
-    public function reloadConfig()
+    public function reloadConfig(): void
     {
         if (\is_null($this->cache) == false) {        
             $this->cache->delete(\strtolower($this->fileName));
@@ -105,7 +106,7 @@ class Config extends Collection
      * @param string $dir
      * @return void
      */
-    public function setConfigDir($dir) 
+    public function setConfigDir(string $dir): void 
     {
         $this->configDir = $dir;
     }
@@ -117,7 +118,7 @@ class Config extends Collection
      * @param string $configDir
      * @return Collection
      */
-    public static function read($fileName, $configDir) 
+    public static function read(string $fileName, string $configDir) 
     {
         return new Self($fileName,null,$configDir);      
     }
@@ -129,7 +130,7 @@ class Config extends Collection
      * @param string $fileName
      * @return array
      */
-    public function load($fileName, $useCache = true) 
+    public function load(string $fileName, bool $useCache = true): array 
     {       
         if (\is_null($this->cache) == false && $useCache == true) {
             $result = $this->cache->fetch(\strtolower($fileName));
@@ -155,7 +156,7 @@ class Config extends Collection
      * @param string $key
      * @return void
      */
-    protected function setComment($comment, $key)
+    protected function setComment(string $comment, string $key): void
     {
         $this->comments[$key] = $comment;
     }
@@ -166,7 +167,7 @@ class Config extends Collection
      * @param string $key
      * @return string
      */
-    protected function getCommentsText($key)
+    protected function getCommentsText(string $key): string
     {
         return (isset($this->comments[$key]) == true) ? "\t// " . $this->comments[$key] . "\n" : '';
     }
@@ -174,9 +175,10 @@ class Config extends Collection
     /**
      * Return config file content
      *
+     * @param array $data
      * @return string
      */
-    private function getFileContent($data) 
+    private function getFileContent(array $data): string 
     {   
         $code = $this->getFileContentHeader();
         $code .= $this->exportConfig($data);
@@ -191,7 +193,7 @@ class Config extends Collection
      * @param string $arrayKey
      * @return string
      */
-    protected function exportArray(array $data, $arrayKey)
+    protected function exportArray(array $data, string $arrayKey): string
     {     
         $items = '';  
         $maxTabs = $this->determineMaxTabs($data);
@@ -215,7 +217,7 @@ class Config extends Collection
      * @param integer $maxTabs
      * @return string
      */
-    protected function exportItem($key, $value, $maxTabs)
+    protected function exportItem(string $key, $value, int $maxTabs): string
     {
         $tabs = $maxTabs - $this->determineTabs($key);
         $value = Utils::getValueAsText($value);
@@ -226,9 +228,10 @@ class Config extends Collection
     /**
      * Export config as text
      *
+     * @param array $data
      * @return string
      */
-    protected function exportConfig($data)
+    protected function exportConfig(array $data): string
     {
         $items = '';
         $maxTabs = $this->determineMaxTabs($data);
@@ -242,6 +245,7 @@ class Config extends Collection
                 $items .= $this->exportItem($key,$item,$maxTabs);
             }
         }
+
         return "return [\n $items \n];\n";      
     }
 
@@ -250,7 +254,7 @@ class Config extends Collection
      *
      * @return string
      */
-    private function getFileContentHeader() 
+    private function getFileContentHeader(): string 
     {
         $code = "<?php \n/**\n";
         $code .= "* Arikaim\n";
@@ -266,9 +270,10 @@ class Config extends Collection
      * Save config file
      *
      * @param string|null $fileName
+     * @param array|null $data
      * @return bool
      */
-    public function save($fileName = null, $data = null)
+    public function save(?string $fileName = null, ?array $data = null): bool
     {
         $fileName = (empty($fileName) == true) ? $this->fileName : $fileName;
         $data = (empty($data) == true) ? $this->data : $data;
@@ -284,7 +289,7 @@ class Config extends Collection
         }
         $content = $this->getFileContent($data);  
      
-        return File::write($fileName,$content);       
+        return (bool)File::write($fileName,$content);       
     }
 
     /**
@@ -293,7 +298,7 @@ class Config extends Collection
      * @param string $fileName
      * @return array
      */
-    public function loadJsonConfigFile($fileName)
+    public function loadJsonConfigFile(string $fileName): array
     {
         $data = File::readJsonFile($this->configDir . $fileName);
         
@@ -306,9 +311,9 @@ class Config extends Collection
      * @param string $fileName
      * @return boolean
      */
-    public function hasConfigFile($fileName)
+    public function hasConfigFile(string $fileName): bool
     {
-        return  File::exists($this->configDir . $fileName);
+        return (bool)File::exists($this->configDir . $fileName);
     }
 
     /**
@@ -318,13 +323,15 @@ class Config extends Collection
      * @param integer $tabSize
      * @return integer
      */
-    private function determineMaxTabs(array $data, $tabSize = 4)
+    private function determineMaxTabs(array $data, int $tabSize = 4): int
     {
         $keys = [];
         foreach ($data as $key => $value) {
             \array_push($keys,\strlen($key));
         }
-        return \ceil(\max($keys) / $tabSize);
+        $len = (\count($keys) == 0) ? 1 : \max($keys);
+
+        return \ceil($len / $tabSize);
     }
 
     /**
@@ -334,7 +341,7 @@ class Config extends Collection
      * @param integer $tabSize
      * @return integer
      */
-    private function determineTabs($key, $tabSize = 4)
+    private function determineTabs(string $key, int $tabSize = 4): int
     {
         return \round(\strlen($key) / $tabSize);
     }
@@ -345,7 +352,7 @@ class Config extends Collection
      * @param integer $count
      * @return string
      */
-    private function getTabs($count)
+    private function getTabs(int $count): string
     {
         $result = '';
         for ($index = 0; $index <= $count; $index++) {
