@@ -89,15 +89,16 @@ class Config extends Collection
     /**
      * Reload config file
      *
+     * @param bool $useCache
      * @return void
      */
-    public function reloadConfig(): void
+    public function reloadConfig(bool $useCache = false): void
     {
         if (\is_null($this->cache) == false) {        
             $this->cache->delete(\strtolower($this->fileName));
         }
         
-        $this->data = $this->load($this->fileName);         
+        $this->data = $this->load($this->fileName,$useCache);         
     }
 
     /**
@@ -200,12 +201,22 @@ class Config extends Collection
     
         foreach ($data as $key => $value) {
             $items .= (empty($items) == false) ? ",\n" : '';
-            $value = Utils::getValueAsText($value);
-            $tabs = $maxTabs - $this->determineTabs($key);
-            $items .="\t\t'$key'" . $this->getTabs($tabs) . "=> $value";
+          
+            if (\is_array($value) == true) {
+                $value = $this->exportArray($value,$key); 
+                $tabs = $maxTabs - $this->determineTabs($key) - 1;
+                $items .= $this->getTabs($tabs) . $value;
+            } else {
+                $value = Utils::getValueAsText($value);      
+                $tabs = $maxTabs - $this->determineTabs($key);         
+                $items .="\t\t'$key'" . $this->getTabs($tabs) . "=> $value";
+            }
         }
         $comment = $this->getCommentsText($arrayKey);
 
+        if (\is_numeric($arrayKey) == true) {
+            return "$comment\t[\n" . $items . "\n\t\t]";
+        }
         return "$comment\t'" . $arrayKey . "' => [\n" . $items . "\n\t]";
     }
 
@@ -279,7 +290,7 @@ class Config extends Collection
         $data = (empty($data) == true) ? $this->data : $data;
 
         if (\is_null($this->cache) == false) {        
-            $this->cache->delete(strtolower($fileName));
+            $this->cache->delete(\strtolower($fileName));
         }
        
         $fileName = $this->configDir . $fileName;
