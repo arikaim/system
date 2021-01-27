@@ -15,13 +15,20 @@ namespace Arikaim\Core\System\Error\Traits;
 trait TaskErrors  
 {
     /**
+     * Task errors
+     *
+     * @var array
+     */
+    protected $taskErrors = [];
+
+    /**
      * Get errors
      *
      * @return array
      */
     public function getErrors(): array
     {
-        return $this->errors ?? [];
+        return $this->taskErrors ?? [];
     }
 
     /**
@@ -42,7 +49,7 @@ trait TaskErrors
      */
     public function addError(string $errorMessage): void
     {
-        $this->errors[] = $errorMessage;
+        $this->taskErrors[] = $errorMessage;
     }
 
     /**
@@ -52,6 +59,6 @@ trait TaskErrors
      */
     public function clearErrors(): void
     {
-        $this->errors = [];
+        $this->taskErrors = [];
     }
 }
