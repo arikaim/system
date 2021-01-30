@@ -112,16 +112,18 @@ class Errors extends Collection implements SystemErrorInterface
      * @param array $params
      * @return string|null
      */
-    public function getError(string $errorCode, array $params = [], ?string $default = 'UNKNOWN_ERROR'): ?string 
+    public function getError(string $errorCode, array $params = [], ?string $default = null): ?string 
     {
+        $default = $default ?? SystemErrorInterface::UNKNOWN_ERROR_CODE;
+
         if ($this->loaded == false) {
             $this->loadErrors();
         }
-
+       
         $error = $this->get($errorCode,null);
         $error = (empty($error) == true) ? $this->get($default,null) : $error;
 
-        return (empty($error) == true) ? null : Text::render($error['message'],$params);      
+        return (empty($error) == true) ? $default : Text::render($error['message'],$params);      
     }
 
     /**
