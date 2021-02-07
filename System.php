@@ -11,7 +11,6 @@ namespace Arikaim\Core\System;
 
 use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\System\NodeJs;
-use Arikaim\Core\System\Composer;
 
 /**
  * Core system helper class
@@ -120,18 +119,6 @@ class System
         }
 
         return $data;
-    }
-
-    /**
-     * Get installed composer packages
-     *
-     * @return array
-     */
-    public function getComposerPackages()
-    {
-        $packages = Composer::readInstalledPackages(ROOT_PATH . BASE_PATH);
-    
-        return $packages;
     }
 
     /**

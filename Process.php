@@ -12,6 +12,9 @@ namespace Arikaim\Core\System;
 use Symfony\Component\Process\Process as SProcess;
 use Symfony\Component\Process\PhpExecutableFinder;
 
+use Arikaim\Core\Utils\Path;
+use Exception;
+
 /**
  * System Process
  */
@@ -149,5 +152,41 @@ class Process
     public static function getCurrentPid()
     {
         return \posix_getpid();
+    }
+
+       /**
+     * Run composer command
+     *
+     * @param string $command
+     * @param boolean $async
+     * @param boolean $realTimeOutput
+     * @return mixed
+     */
+    public static function runComposerCommand(string $command, bool $async = false, bool $realTimeOutput = false)
+    {
+        $command = 'php ' . Path::BIN_PATH . 'composer.phar ' . $command;
+        $env = [
+            'COMPOSER_HOME'      => Path::BIN_PATH,
+            'COMPOSER_CACHE_DIR' => '/dev/null'
+        ];
+
+        $process = Self::create($command,$env);
+        try {
+            if ($async == true) {
+                $process->start();
+            } else {
+                if ($realTimeOutput == true) {
+                    $process->run(function ($type, $buffer) {                       
+                        echo $buffer;                        
+                    });
+                }
+                $process->run();
+            }
+            $output = $process->getOutput();
+        } catch(Exception $e) {            
+            return $e->getMessage();
+        }
+
+        return $output;
     }
 }
