@@ -77,32 +77,43 @@ trait PhpConfigFile
      *
      * @param array $data
      * @param string $arrayKey
+     * @param int $currentTab
      * @return string
      */
-    protected function exportArray(array $data, string $arrayKey): string
+    protected function exportArray(array $data, string $arrayKey, int $currentTab = 1, int $endTab = 1): string
     {     
         $items = '';  
         $maxTabs = $this->determineMaxTabs($data);
-    
+        $currentTabs = $this->getTabs($currentTab);
+   
         foreach ($data as $key => $value) {
             $items .= (empty($items) == false) ? ",\n" : '';
           
-            if (\is_array($value) == true) {
-                $value = $this->exportArray($value,$key); 
-                $tabs = $maxTabs - $this->determineTabs($key) - 1;
+            if (\is_array($value) == true) {                         
+                $value = $this->exportArray($value,$key,$currentTab,$currentTab + 1); 
+               // $currentTab++;   
+                $tabs = $maxTabs - $this->determineTabs($key) + $currentTab;
                 $items .= $this->getTabs($tabs) . $value;
             } else {
                 $value = Utils::getValueAsText($value);      
-                $tabs = $maxTabs - $this->determineTabs($key);         
-                $items .="\t\t'$key'" . $this->getTabs($tabs) . "=> $value";
+                $tabs = $maxTabs - $this->determineTabs($key);  
+             
+                if (\is_numeric($key) == true) {
+                    $items .= $this->getTabs($currentTab + 2) . "$value";
+                } else {
+                    $items .= $this->getTabs($currentTab + 1) . "'$key'" . $this->getTabs($tabs) . "=> $value";
+                }                   
             }
         }
         $comment = $this->getCommentsText($arrayKey);
 
+        $endTabs = $this->getTabs($endTab);
+
         if (\is_numeric($arrayKey) == true) {
-            return "$comment\t[\n" . $items . "\n\t\t]";
+            return "$comment" . $currentTabs . "[\n" . $items . "\n" . $endTabs . "]";
         }
-        return "$comment\t'" . $arrayKey . "' => [\n" . $items . "\n\t]";
+
+        return "$comment" . $currentTabs . "'" . $arrayKey . "' => [\n" . $items . "\n"  . $endTabs . "]";
     }
 
     /**
@@ -135,7 +146,7 @@ trait PhpConfigFile
         foreach ($data as $key => $item) {
             if (\is_array($item) == true) {
                 $items .= (empty($items) == false) ? ",\n" : '';
-                $items .= $this->exportArray($item,$key);
+                $items .= $this->exportArray($item,$key,1,1);
             } else {
                 $items .= (empty($items) == false) ? ",\n" : '';
                 $items .= $this->exportItem($key,$item,$maxTabs);
@@ -199,13 +210,12 @@ trait PhpConfigFile
      * @return string
      */
     private function getTabs(int $count): string
-    {
-        $result = '';
-        for ($index = 0; $index <= $count; $index++) {
-            $result .= "\t";
+    {       
+        if ($count <= 0) {
+            return ' ';
         }
-        
-        return $result;
+       
+        return \str_repeat("\t",$count);  
     }
 
     /**
