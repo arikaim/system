@@ -51,6 +51,20 @@ class Config extends Collection
     private $configDir;
 
     /**
+     * List read protected var keys
+     *
+     * @var array
+     */
+    private $readProtectedKeys = [];
+
+    /**
+     * List write protected var keys
+     *
+     * @var array
+     */
+    private $writeProtectedKeys = [];
+
+    /**
      * Constructor
      *
      * @param string|null $fileName
@@ -72,6 +86,50 @@ class Config extends Collection
         $this->setComment('application settings','settings');
     }
     
+    /**
+     * Set read protecetd vars keys
+     *
+     * @param array $keys
+     * @return void
+     */
+    public function setReadProtectedVars(array $keys): void
+    {
+        $this->readProtectedKeys = $keys;
+    }
+
+    /**
+     * Set write protecetd vars keys
+     *
+     * @param array $keys
+     * @return void
+     */
+    public function setWriteProtectedVars(array $keys): void
+    {
+        $this->writeProtectedKeys = $keys;
+    }
+
+    /**
+     * Return true if var is not read protected
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasReadAccess(string $key): bool
+    {
+        return (\in_array($key,$this->readProtectedKeys) == false);
+    }
+
+    /**
+     * Return true if var is not write protected
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function hasWriteAccess(string $key): bool
+    {
+        return (\in_array($key,$this->writeProtectedKeys) == false);
+    }
+
     /**
      * Get config file name
      *
