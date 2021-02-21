@@ -11,6 +11,7 @@ namespace Arikaim\Core\System;
 
 use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\System\NodeJs;
+use Arikaim\Core\System\Process;
 
 /**
  * Core system helper class
@@ -42,6 +43,19 @@ class System
     public static function getNodeJsVersion(): ?string 
     {
         return NodeJs::getVersion();
+    }
+
+    /**
+     * Get php console ver
+     *
+     * @return mixed
+     */
+    public static function getPhpConsoleVersion()
+    {
+        $php = (Process::findPhp() === false) ? 'php' : Process::findPhp();
+        $command = $php . ' --version';
+
+        return Process::run($command);
     }
 
     /**
