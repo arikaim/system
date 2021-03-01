@@ -67,6 +67,7 @@ class System
     {  
         $os = \posix_uname();   
         return [
+            'core'           => (defined('ARIKAIM_VERSION') == true) ? constant('ARIKAIM_VERSION') : null,
             'php_version'    => Self::getPhpVersion(),       
             'os_name'        => \explode(' ',$os['sysname'])[0],
             'os_version'     => $os['release'],
