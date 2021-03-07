@@ -22,6 +22,17 @@ trait TaskErrors
     protected $taskErrors = [];
 
     /**
+     * Get error
+     *
+     * @param integer $index
+     * @return mixed
+     */
+    public function getError(int $index = 0)
+    {
+        return $this->taskErrors[$index] ?? null; 
+    }
+
+    /**
      * Get errors
      *
      * @return array
