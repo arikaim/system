@@ -61,15 +61,26 @@ class Process
      *
      * @param array $command
      * @param callable|null $callback
-     * @param array $env
+     * @param array|null $env
      * @return mixed
      */
-    public static function start($command, callable $callback = null, array $env = [])
+    public static function start($command, callable $callback = null, ?array $env = null)
     {
         $process = Self::create($command,$env);
         $process->start($callback);
     
         return $process->getPid();
+    }
+
+    /**
+     * Set process title
+     *
+     * @param string $title
+     * @return void
+     */
+    public static function setTitle(string $title): void
+    {
+        \cli_set_process_title($title);
     }
 
     /**
@@ -80,12 +91,12 @@ class Process
      * @param array $env
      * @return mixed
     */
-    public static function startBackground($command, callable $callback = null, array $env = [])
+    public static function startBackground($command, $callback = null, array $env = [])
     {
         $process = Self::create($command,$env);
         $process->disableOutput();
         $process->start($callback);
-
+        
         return $process->getPid();
     }
 
@@ -110,6 +121,28 @@ class Process
     }
 
     /**
+     * Stop (kill) process
+     *
+     * @param string|int $pid
+     * @return boolean
+     */
+    public static function stop($pid): bool 
+    {
+        if (\function_exists('posix_kill') == true) {
+            return @\posix_kill($pid,9);
+        }
+        try {
+            $result = \shell_exec(\sprintf('kill %d 2>&1',$pid));
+            if (!preg_match('/No such process/',$result)) {
+                return true;
+            }
+        } catch (Exception $e) {
+        }
+
+        return false;
+    }    
+
+    /**
      * Reurn true if process is running (Linux only)
      *
      * @param integer $pid
@@ -117,7 +150,20 @@ class Process
      */
     public static function isRunning($pid): bool 
     {
-        return (\file_exists('/proc/{' . $pid . '}') == true);    
+        if (\function_exists('posix_kill') == true) {
+            $result = \posix_kill((int)$pid,0);
+            if ($result !== false) {
+                return true;
+            }            
+        }
+        if (\function_exists('posix_getpgid') == true) {
+            $result = \posix_getpgid($pid);
+            if ($result !== false) {
+                return true;
+            }   
+        }
+
+        return (\file_exists("/proc/$pid") == true);    
     }
 
     /**
