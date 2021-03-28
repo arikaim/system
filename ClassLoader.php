@@ -17,20 +17,6 @@ use Exception;
 class ClassLoader 
 {
     /**
-     * Root classes path
-     *
-     * @var string
-     */
-    private $rootPath;
-
-    /**
-     * Base path
-     *
-     * @var string
-     */
-    private $basePath;
-
-    /**
      * Arikaim core path
      *
      * @var string
@@ -45,19 +31,39 @@ class ClassLoader
     private $packagesNamespace;
 
     /**
+     * Document root
+     *
+     * @var string
+     */
+    private $documentRoot;
+
+    /**
+     * Path
+     *
+     * @var string
+     */
+    private $path;
+
+    /**
      * Constructor
      *
      * @param string $basePath
-     * @param string|null $rootPath
+     * @param string|null $documentRoot
      * @param string|null $coreNamespace
      * @param array $packagesNamespace
      */
-    public function __construct(string $basePath, ?string $rootPath = null, ?string $coreNamespace = null, array $packagesNamespace = []) 
-    {   
-        $this->rootPath = $rootPath;
+    public function __construct(string $basePath, ?string $documentRoot = null, ?string $coreNamespace = null, array $packagesNamespace = []) 
+    {        
         $this->coreNamespace = $coreNamespace;
-        $this->basePath = $basePath;
         $this->packagesNamespace = $packagesNamespace;
+
+        if ($documentRoot != null) {
+            $this->documentRoot = $documentRoot;
+        } else {
+            $this->documentRoot = (\php_sapi_name() == 'cli') ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];   
+        }
+
+        $this->path = $this->documentRoot . $basePath;
     }
     
     /**
@@ -67,20 +73,20 @@ class ClassLoader
      */
     public function register(): void 
     {
-        \spl_autoload_register(array($this,'LoadClassFile'));
+        \spl_autoload_register([$this,'LoadClassFile'],false,false);
     }
 
     /**
      * Load class file
      *
      * @param string $class
-     * @return bool
+     * @return mixed
      */
     public function LoadClassFile(string $class) 
     {
         $file = $this->getClassFileName($class);
-        
-        return (\file_exists($file) == true) ? require $file : false;        
+      
+        return (\file_exists($file) == true) ? require_once $file : false;        
     }
 
     /**
@@ -90,11 +96,7 @@ class ClassLoader
      */
     public function getDocumentRoot(): string
     {
-        if ($this->rootPath != null) {
-            return $this->rootPath;
-        }
-
-        return (\php_sapi_name() == 'cli') ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];         
+        return $this->documentRoot;         
     }
 
     /**
@@ -104,15 +106,13 @@ class ClassLoader
      * @return string
      */
     public function getClassFileName(string $class): string 
-    {   
-        $path = $this->getDocumentRoot() . $this->basePath;  
-       
-        $namespace = $this->getNamespace($class);
+    {     
+        $namespace = \substr($class,0,\strrpos($class,'\\'));     
         $tokens = \explode('\\',$class);
         $class = \end($tokens);
         $namespace = $this->namespaceToPath($namespace); 
      
-        return $path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . '.php';       
+        return $this->path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . '.php';       
     }
 
     /**
@@ -136,22 +136,17 @@ class ClassLoader
     public function namespaceToPath(string $namespace, bool $full = false): string 
     {  
         $namespace = \ltrim($namespace,'\\');
-        $namespace = \str_replace($this->coreNamespace,\strtolower($this->coreNamespace),$namespace);
+        $namespace = str_replace($this->coreNamespace,\strtolower($this->coreNamespace),$namespace);
     
-        foreach ($this->packagesNamespace as $value) {
-            if (\strpos($namespace,$value) !== false) {
-                $namespace = \strtolower($namespace);
-                break;
-            }            
+        if (\strpos($namespace,$this->packagesNamespace[0]) !== false ||
+            \strpos($namespace,$this->packagesNamespace[1]) !== false) {
+            
+            $namespace = \strtolower($namespace);                             
         }
+
         $namespace = \str_replace('\\',DIRECTORY_SEPARATOR,$namespace);
-        
-        if ($full == true) {
-            $path = $this->getDocumentRoot() . $this->basePath;
-            $namespace = $path . DIRECTORY_SEPARATOR .  $namespace;
-        }
-       
-        return $namespace;   
+         
+        return ($full == true) ? $this->path . DIRECTORY_SEPARATOR . $namespace : $namespace;   
     } 
 
     /**
@@ -172,7 +167,7 @@ class ClassLoader
      * @param array $items
      * @return bool
      */
-    public function loadAlliases(array $items)
+    public function loadAlliases(array $items): bool
     {                
         foreach ($items as $class => $alias) {      
             if ($this->loadClassAlias($class,$alias) == false) { 

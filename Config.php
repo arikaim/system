@@ -71,15 +71,15 @@ class Config extends Collection
      * @param CacheInterface|null $cache
      * @param string $dir
      */
-    public function __construct(?string $fileName = null, CacheInterface $cache = null, string $dir) 
+    public function __construct(?string $fileName = 'config.php', ?CacheInterface $cache = null, string $dir) 
     {       
         $this->cache = $cache;
-        $this->fileName = (empty($fileName) == true) ? 'config.php' : $fileName;
+        $this->fileName = $fileName;
         $this->configDir = $dir;
-        $data = $this->load($this->fileName);   
-        
         Self::$cacheSaveTime = \defined('CACHE_SAVE_TIME') ? \constant('CACHE_SAVE_TIME') : Self::$cacheSaveTime;
 
+        $data = $this->load($this->fileName);   
+    
         parent::__construct($data);   
 
         $this->setComment('database settings','db');
