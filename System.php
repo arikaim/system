@@ -46,6 +46,16 @@ class System
     }
 
     /**
+     * Get registered socket transports
+     *
+     * @return void
+     */
+    public static function getStreamTransports()
+    {
+        return \stream_get_transports();
+    } 
+
+    /**
      * Get php console ver
      *
      * @return mixed
