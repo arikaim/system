@@ -48,7 +48,7 @@ class System
     /**
      * Get registered socket transports
      *
-     * @return void
+     * @return array
      */
     public static function getStreamTransports()
     {
