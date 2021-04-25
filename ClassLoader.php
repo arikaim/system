@@ -48,21 +48,15 @@ class ClassLoader
      * Constructor
      *
      * @param string $basePath
-     * @param string|null $documentRoot
-     * @param string|null $coreNamespace
+     * @param string $documentRoot
+     * @param string $coreNamespace
      * @param array $packagesNamespace
      */
-    public function __construct(string $basePath, ?string $documentRoot = null, ?string $coreNamespace = null, array $packagesNamespace = []) 
+    public function __construct(string $basePath, string $documentRoot, string $coreNamespace, array $packagesNamespace = []) 
     {        
         $this->coreNamespace = $coreNamespace;
         $this->packagesNamespace = $packagesNamespace;
-
-        if ($documentRoot != null) {
-            $this->documentRoot = $documentRoot;
-        } else {
-            $this->documentRoot = (\php_sapi_name() == 'cli') ? __DIR__ : $_SERVER['DOCUMENT_ROOT'];   
-        }
-
+        $this->documentRoot = $documentRoot;
         $this->path = $this->documentRoot . $basePath;
     }
     
@@ -156,9 +150,9 @@ class ClassLoader
      * @param string $alias
      * @return bool
      */
-    public function loadClassAlias(string $class, string $alias)
+    public function loadClassAlias(string $class, string $alias): bool
     {
-        return (\class_exists($class) == true) ? \class_alias($class,$alias) : false;                
+        return (\class_exists($class) == true) ? (bool)\class_alias($class,$alias) : false;                
     }
 
     /**

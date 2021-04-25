@@ -21,14 +21,7 @@ use Arikaim\Core\System\Traits\PhpConfigFile;
 class Config extends Collection
 {
     use PhpConfigFile;
-
-    /**
-     * Cache save time
-     *
-     * @var integer
-     */
-    public static $cacheSaveTime = 4;
-    
+ 
     /**
      * Config file name
      *
@@ -76,8 +69,7 @@ class Config extends Collection
         $this->cache = $cache;
         $this->fileName = $fileName;
         $this->configDir = $dir;
-        Self::$cacheSaveTime = \defined('CACHE_SAVE_TIME') ? \constant('CACHE_SAVE_TIME') : Self::$cacheSaveTime;
-
+       
         $data = $this->load($this->fileName);   
     
         parent::__construct($data);   
@@ -196,9 +188,9 @@ class Config extends Collection
       
         $fullFileName = $this->configDir . $fileName;
        
-        $result = (File::exists($fullFileName) == true) ? include($fullFileName) : [];    
+        $result = (\file_exists($fullFileName) == true) ? include($fullFileName) : [];    
         if (\is_null($this->cache) == false && (empty($result) == false)) {
-            $this->cache->save(\strtolower($fileName),$result,Self::$cacheSaveTime);
+            $this->cache->save(\strtolower($fileName),$result);
         } 
 
         return $result;            
@@ -246,6 +238,6 @@ class Config extends Collection
      */
     public function hasConfigFile(string $fileName): bool
     {
-        return (bool)File::exists($this->configDir . $fileName);
+        return (bool)\file_exists($this->configDir . $fileName);
     }
 }

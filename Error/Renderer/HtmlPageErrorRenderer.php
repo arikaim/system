@@ -53,7 +53,7 @@ class HtmlPageErrorRenderer implements ErrorRendererInterface
                     $output = $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();            
                 }
             }
-        } catch(Exception $exception) {           
+        } catch(Exception $e) {           
             $output = $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();  
         }
 
