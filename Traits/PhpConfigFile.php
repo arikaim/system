@@ -32,8 +32,25 @@ trait PhpConfigFile
      */
     public function include(string $fileName): ?array 
     {       
-        return (File::exists($fileName) == true) ? include($fileName) : null;             
+        return (\file_exists($fileName) == true) ? include($fileName) : null;             
     }   
+
+    /**
+     * Include php array
+     *
+     * @param string $fileName
+     * @return array|null
+     */
+    public function includePhpArray(string $fileName): ?array
+    {
+        if (\file_exists($fileName) == false) {
+            return null;
+        }
+        $code = \file_get_contents($fileName);
+        $result = eval('?>' . $code);
+
+        return  (\is_array($result) == false) ? null : $result;
+    } 
 
     /**
      * Set array key comment

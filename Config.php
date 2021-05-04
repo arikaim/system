@@ -179,7 +179,7 @@ class Config extends Collection
      */
     public function load(string $fileName, bool $useCache = true): array 
     {       
-        if (\is_null($this->cache) == false && $useCache == true) {
+        if ((\is_null($this->cache) == false) && ($useCache == true)) {          
             $result = $this->cache->fetch(\strtolower($fileName));
             if (\is_array($result) == true) {
                 return $result;
@@ -189,7 +189,7 @@ class Config extends Collection
         $fullFileName = $this->configDir . $fileName;
        
         $result = (\file_exists($fullFileName) == true) ? include($fullFileName) : [];    
-        if (\is_null($this->cache) == false && (empty($result) == false)) {
+        if ((\is_null($this->cache) == false) && (empty($result) == false)) {
             $this->cache->save(\strtolower($fileName),$result);
         } 
 
