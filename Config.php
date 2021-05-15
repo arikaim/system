@@ -144,7 +144,9 @@ class Config extends Collection
             $this->cache->delete(\strtolower($this->fileName));
         }
         
-        $this->data = $this->load($this->fileName,$useCache);         
+        $config = $this->includePhpArray($this->fileName);
+
+        $this->data = (\is_array($config) == true) ? $config : $this->load($this->fileName,$useCache);         
     }
 
     /**

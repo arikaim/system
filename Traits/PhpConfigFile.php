@@ -49,7 +49,7 @@ trait PhpConfigFile
         $code = \file_get_contents($fileName);
         $result = eval('?>' . $code);
 
-        return  (\is_array($result) == false) ? null : $result;
+        return (\is_array($result) == false) ? null : $result;
     } 
 
     /**
