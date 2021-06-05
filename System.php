@@ -78,7 +78,7 @@ class System
     {  
         $os = \posix_uname();   
         return [
-            'core'           => Composer::getInstalledPackageVersion('arikaim\core'),
+            'core'           => Composer::getInstalledPackageVersion('arikaim/core'),
             'php_version'    => Self::getPhpVersion(),       
             'os_name'        => \explode(' ',$os['sysname'])[0],
             'os_version'     => $os['release'],
