@@ -12,6 +12,7 @@ namespace Arikaim\Core\System;
 use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\System\NodeJs;
 use Arikaim\Core\System\Process;
+use Arikaim\Core\Packages\Composer;
 
 /**
  * Core system helper class
@@ -77,7 +78,7 @@ class System
     {  
         $os = \posix_uname();   
         return [
-            'core'           => (defined('ARIKAIM_VERSION') == true) ? constant('ARIKAIM_VERSION') : null,
+            'core'           => Composer::getInstalledPackageVersion('arikaim\core'),
             'php_version'    => Self::getPhpVersion(),       
             'os_name'        => \explode(' ',$os['sysname'])[0],
             'os_version'     => $os['release'],
