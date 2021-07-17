@@ -65,19 +65,28 @@ class Config extends Collection
      * @param string $dir
      */
     public function __construct(?string $fileName = 'config.php', ?CacheInterface $cache = null, string $dir) 
-    {       
+    {             
         $this->cache = $cache;
         $this->fileName = $fileName;
         $this->configDir = $dir;
        
-        $data = $this->load($this->fileName);   
-    
+        $data = $this->load($fileName);
         parent::__construct($data);   
 
         $this->setComment('database settings','db');
         $this->setComment('application settings','settings');
     }
     
+    /**
+     * Get cache
+     *
+     * @return CacheInterface|null
+     */
+    public function getCache(): ?CacheInterface
+    {
+        return $this->cache;
+    }
+
     /**
      * Set read protecetd vars keys
      *
@@ -143,11 +152,8 @@ class Config extends Collection
         if (\is_null($this->cache) == false) {        
             $this->cache->delete(\strtolower($this->fileName));
         }
-        
-        $fullFileName = $this->configDir . $this->fileName;
-
-        $config = $this->includePhpArray($fullFileName);
-
+    
+        $config = $this->includePhpArray($this->configDir . $this->fileName);
         $this->data = (\is_array($config) == true) ? $config : $this->load($this->fileName,$useCache);         
     }
 
@@ -210,15 +216,13 @@ class Config extends Collection
     public function save(?string $fileName = null, ?array $data = null): bool
     {
         $fileName = (empty($fileName) == true) ? $this->fileName : $fileName;
-        $data = (empty($data) == true) ? $this->data : $data;
+        $data = (\is_array($data) == true) ? $data : $this->data;
 
         if (\is_null($this->cache) == false) {        
             $this->cache->delete(\strtolower($fileName));
         }
        
-        $fileName = $this->configDir . $fileName;
-
-        return $this->saveConfigFile($fileName,$data);           
+        return $this->saveConfigFile($this->configDir . $fileName,$data);           
     }
 
     /**
