@@ -11,6 +11,7 @@ namespace Arikaim\Core\System\Traits;
 
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Utils;
+use Arikaim\Core\Utils\Path;
 
 /**
  * Php Config file loader and writer
@@ -25,15 +26,29 @@ trait PhpConfigFile
     protected $comments = [];
 
     /**
-     * Include config file
+     * Include file
      *  
-     * @param string $fileName
+     * @param string $fileName  Full file name
      * @return array|null
      */
     public function include(string $fileName): ?array 
     {       
         return (\file_exists($fileName) == true) ? include($fileName) : null;             
     }   
+
+    /**
+     * Include config file
+     *
+     * @param string $fileName
+     * @param string|null $extensionName
+     * @return array|null
+     */
+    public function includeConfigFile(string $fileName, ?string $extensionName = null): ?array
+    {
+        $configFile = empty($extensionName) ? Path::CONFIG_PATH . $fileName : Path::getExtensionConfigPath($extensionName) . $fileName;
+
+        return (\file_exists($configFile) == true) ? include($configFile) : null;
+    }
 
     /**
      * Include php array
