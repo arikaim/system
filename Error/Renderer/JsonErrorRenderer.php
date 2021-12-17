@@ -41,7 +41,9 @@ class JsonErrorRenderer implements ErrorRendererInterface
     public function render(array $errorDetails): string
     {      
         $this->response->setError($errorDetails['message']);
-        
+        $this->response->setStatus('error');
+        $this->response->setCode($errorDetails['code'] ?? 400);
+       
         return $this->response->getResponseJson();
     }
 }
