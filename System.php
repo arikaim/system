@@ -74,18 +74,31 @@ class System
      *
      * @return array
      */
+    public function getInfo(): array
+    {
+        return Self::getSystemInfo();
+    }
+
+    /**
+     * Get system info
+     *
+     * @return array
+     */
     public static function getSystemInfo(): array 
     {  
         $os = \posix_uname();   
+
         return [
-            'core'           => Composer::getInstalledPackageVersion('arikaim/core'),
-            'php_version'    => Self::getPhpVersion(),       
-            'os_name'        => \explode(' ',$os['sysname'])[0],
-            'os_version'     => $os['release'],
-            'os_machine'     => $os['machine'],
-            'apache_version' => Self::getApacheVersion(),
-            'apache_modules' => Self::getApacheModules(),
-            'os_node'        => $os['nodename']
+            'core'            => Composer::getInstalledPackageVersion('arikaim/core'),
+            'php_version'     => Self::getPhpVersion(),       
+            'os_name'         => \explode(' ',$os['sysname'])[0],
+            'os_version'      => $os['release'],
+            'os_machine'      => $os['machine'],
+            'apache_version'  => Self::getApacheVersion(),
+            'apache_modules'  => Self::getApacheModules(),
+            'current_user'    => \get_current_user(),           
+            'user_id'         => \getmyuid(), 
+            'os_node'         => $os['nodename']
         ];       
     }
 
