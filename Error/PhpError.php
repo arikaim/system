@@ -49,6 +49,22 @@ class PhpError
     }
 
     /**
+     * Convert to string
+     *
+     * @param array $errorDetails
+     * @return string
+     */
+    public static function toString(array $errorDetails): string
+    {
+        $message = $errorDetails['message'] ?? '';
+        $message .= (empty($errorDetails['class'] ?? null) == false) ? ' class:' . $errorDetails['class'] : '';     
+        $message .= (empty($errorDetails['line'] ?? null) == false) ? ' line: ' . $errorDetails['line'] : '';
+        $message .= (empty($errorDetails['file'] ?? null) == false) ? ' file: ' . $errorDetails['file'] : '';
+
+        return $message;
+    }
+
+    /**
      * Get JSON error message
      *
      * @return string

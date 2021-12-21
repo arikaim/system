@@ -16,8 +16,9 @@ use Throwable;
  */
 interface ErrorHandlerInterface
 {  
-    const JSON_RENDER_TYPE = 'json';
-    const HTML_RENDER_TYPE = 'html';
+    const JSON_RENDER_TYPE    = 'json';
+    const HTML_RENDER_TYPE    = 'html';
+    const CONSOLE_RENDER_TYPE = 'console';
 
     /**
      * Render error

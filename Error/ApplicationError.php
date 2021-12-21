@@ -10,8 +10,10 @@
 namespace Arikaim\Core\System\Error;
 
 use Arikaim\Core\System\Error\ErrorHandlerInterface;
-use Arikaim\Core\System\Error\Renderer\JsonErrorRenderer;
+
 use Arikaim\Core\System\Error\PhpError;
+use Arikaim\Core\Http\ApiResponse;
+use Arikaim\Core\Interfaces\View\HtmlPageInterface;
 use Throwable;
 
 /**
@@ -20,30 +22,20 @@ use Throwable;
 class ApplicationError implements ErrorHandlerInterface
 {  
     /**
-     * Html renderer
+     * Page reference
      *
-     * @var ErrorRendererInterface
+     * @var HtmlPageInterface
      */
-    protected $htmlRenderer;
-
-    /**
-     * Json renderer
-     *
-     * @var ErrorRendererInterface
-     */
-    protected $jsonRenderer;
+    protected $page;
 
     /**
      * Constructor
      *
-     * @param ErrorRendererInterface $htmlRenderer
-     * @param boolean $displayErrorDetails
-     * @param boolean $displayErrorTrace
+     * @param HtmlPageInterface $page     
      */
-    public function __construct(ErrorRendererInterface $htmlRenderer)
+    public function __construct(HtmlPageInterface $page)
     {
-        $this->htmlRenderer = $htmlRenderer;
-        $this->jsonRenderer = new JsonErrorRenderer();
+        $this->page = $page;       
     }
 
     /**
@@ -55,11 +47,30 @@ class ApplicationError implements ErrorHandlerInterface
      */
     public function renderError(Throwable $exception, string $renderType): string
     {
+        $errorDetails = PhpError::toArray($exception);
+
         switch ($renderType) {
             case ErrorHandlerInterface::JSON_RENDER_TYPE:
-                return $this->jsonRenderer->render(PhpError::toArray($exception));                            
+                return $this->renderJson($errorDetails);                            
         }
         
-        return $this->htmlRenderer->render(PhpError::toArray($exception));      
+        return $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();     
+    }
+
+     /**
+    * Render error
+    *
+    * @param array $errorDetails 
+    * @return string
+    */
+    public function renderJson(array $errorDetails): string
+    {     
+        $response = new ApiResponse(); 
+        $response->field('details',PHPError::toString($errorDetails));
+        $response->setError($errorDetails['message']);
+        $response->setStatus('error');
+        $response->setCode($errorDetails['code'] ?? 400);
+       
+        return $response->getResponseJson();
     }
 }
