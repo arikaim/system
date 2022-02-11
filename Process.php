@@ -32,7 +32,9 @@ class Process
      */
     public static function create($command, array $env = null, $input = null, $timeout = 60, $options = null)
     {
-        $process = new SProcess($command,null,$env,$input,$timeout,$options);
+        $command = (\is_string($command) == true) ? \explode(' ',$command) : $command;
+
+        $process = new SProcess($command,null,$env,$input,$timeout);
         $process->enableOutput();
 
         return $process;
@@ -49,8 +51,6 @@ class Process
     public static function run($command, array $env = [], $inheritEnv = true)
     {
         $process = Self::create($command,$env);
-        $process->inheritEnvironmentVariables($inheritEnv);
-    
         $process->run();
 
         return ($process->isSuccessful() == true) ? $process->getOutput() : $process->getErrorOutput();          
@@ -59,7 +59,7 @@ class Process
     /**
      * Run console command
      *
-     * @param array $command
+     * @param array|string $command
      * @param callable|null $callback
      * @param array|null $env
      * @return mixed
@@ -86,7 +86,7 @@ class Process
     /**
      * Run console command in backgorund
      *
-     * @param array $command
+     * @param array|string $command
      * @param callable|null $callback
      * @param array $env
      * @return mixed
