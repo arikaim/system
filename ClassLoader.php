@@ -67,7 +67,7 @@ class ClassLoader
      */
     public function register(): void 
     {
-        \spl_autoload_register([$this,'LoadClassFile'],false,false);
+        \spl_autoload_register([$this,'LoadClassFile']);
     }
 
     /**

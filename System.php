@@ -37,6 +37,15 @@ class System
     }
 
     /**
+     * Get apache current user
+     * @return string 
+     */
+    public static function getApacheUser(): string
+    {
+        return exec('whoami');
+    }
+
+    /**
      * Get nodejs version
      *
      * @return string:null
