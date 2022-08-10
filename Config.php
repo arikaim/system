@@ -9,10 +9,7 @@
  */
 namespace Arikaim\Core\System;
 
-use Arikaim\Core\Utils\File;
 use Arikaim\Core\Collection\Collection;
-use Arikaim\Core\Interfaces\CacheInterface;
-
 use Arikaim\Core\System\Traits\PhpConfigFile;
 
 /**
@@ -29,13 +26,6 @@ class Config extends Collection
      */
     private $fileName;
     
-    /**
-     * Cache
-     *
-     * @var CacheInterface|null
-    */
-    private $cache;
-
     /**
      * Config files directory
      *
@@ -61,12 +51,10 @@ class Config extends Collection
      * Constructor
      *
      * @param string|null $fileName
-     * @param CacheInterface|null $cache
      * @param string $dir
      */
-    public function __construct(?string $fileName = 'config.php', ?CacheInterface $cache = null, string $dir) 
+    public function __construct(?string $fileName = 'config.php', string $dir) 
     {             
-        $this->cache = $cache;
         $this->fileName = $fileName;
         $this->configDir = $dir;
        
@@ -77,16 +65,6 @@ class Config extends Collection
         $this->setComment('application settings','settings');
     }
     
-    /**
-     * Get cache
-     *
-     * @return CacheInterface|null
-     */
-    public function getCache(): ?CacheInterface
-    {
-        return $this->cache;
-    }
-
     /**
      * Set read protecetd vars keys
      *
@@ -144,17 +122,12 @@ class Config extends Collection
     /**
      * Reload config file
      *
-     * @param bool $useCache
      * @return void
      */
-    public function reloadConfig(bool $useCache = false): void
+    public function reloadConfig(): void
     {
-        if (\is_null($this->cache) == false) {        
-            $this->cache->delete(\strtolower($this->fileName));
-        }
-    
         $config = $this->includePhpArray($this->configDir . $this->fileName);
-        $this->data = (\is_array($config) == true) ? $config : $this->load($this->fileName,$useCache);         
+        $this->data = (\is_array($config) == true) ? $config : $this->load($this->fileName);         
     }
 
     /**
@@ -183,27 +156,14 @@ class Config extends Collection
     /**
      * Load config file
      *
-     * @param boolean $useCache
      * @param string $fileName
      * @return array
      */
-    public function load(string $fileName, bool $useCache = true): array 
+    public function load(string $fileName): array 
     {       
-        if ((\is_null($this->cache) == false) && ($useCache == true)) {          
-            $result = $this->cache->fetch(\strtolower($fileName));
-            if (\is_array($result) == true) {
-                return $result;
-            }
-        }
-      
         $fullFileName = $this->configDir . $fileName;
        
-        $result = (\file_exists($fullFileName) == true) ? include($fullFileName) : [];    
-        if ((\is_null($this->cache) == false) && (empty($result) == false)) {
-            $this->cache->save(\strtolower($fileName),$result);
-        } 
-
-        return $result;            
+        return (\file_exists($fullFileName) == true) ? include($fullFileName) : [];              
     }   
 
     /**
@@ -218,10 +178,6 @@ class Config extends Collection
         $fileName = (empty($fileName) == true) ? $this->fileName : $fileName;
         $data = (\is_array($data) == true) ? $data : $this->data;
 
-        if (\is_null($this->cache) == false) {        
-            $this->cache->delete(\strtolower($fileName));
-        }
-       
         return $this->saveConfigFile($this->configDir . $fileName,$data);           
     }
 
@@ -233,9 +189,9 @@ class Config extends Collection
      */
     public function loadJsonConfigFile(string $fileName): array
     {
-        $data = File::readJsonFile($this->configDir . $fileName);
+        $data = \Arikaim\Core\Utils\File::readJsonFile($this->configDir . $fileName);
         
-        return (\is_array($data) == true) ? $data : [];
+        return ($data === false) ? [] : $data;
     }
 
     /**
