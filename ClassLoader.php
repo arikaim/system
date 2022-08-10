@@ -67,20 +67,24 @@ class ClassLoader
      */
     public function register(): void 
     {
-        \spl_autoload_register([$this,'LoadClassFile']);
+        \spl_autoload_register([$this,'LoadClassFile'],true,false);
     }
 
     /**
      * Load class file
      *
      * @param string $class
-     * @return mixed
+     * @return true|null
      */
-    public function LoadClassFile(string $class) 
+    public function LoadClassFile(string $class): ?bool
     {
         $file = $this->getClassFileName($class);
-      
-        return (\file_exists($file) == true) ? require_once $file : false;        
+        if (\file_exists($file) == true) {          
+            require_once $file;
+            return true;
+        }
+
+        return null;    
     }
 
     /**
@@ -104,9 +108,8 @@ class ClassLoader
         $namespace = \substr($class,0,\strrpos($class,'\\'));     
         $tokens = \explode('\\',$class);
         $class = \end($tokens);
-        $namespace = $this->namespaceToPath($namespace); 
      
-        return $this->path . DIRECTORY_SEPARATOR .  $namespace . DIRECTORY_SEPARATOR . $class . '.php';       
+        return $this->path . DIRECTORY_SEPARATOR . $this->namespaceToPath($namespace) . DIRECTORY_SEPARATOR . $class . '.php';       
     }
 
     /**
@@ -129,11 +132,12 @@ class ClassLoader
      */
     public function namespaceToPath(string $namespace, bool $full = false): string 
     {  
-        $namespace = \ltrim($namespace,'\\');
-        $namespace = str_replace($this->coreNamespace,\strtolower($this->coreNamespace),$namespace);
+        $namespace = \str_replace($this->coreNamespace,\strtolower($this->coreNamespace),\ltrim($namespace,'\\'));
     
-        if (\strpos($namespace,$this->packagesNamespace[0]) !== false ||
-            \strpos($namespace,$this->packagesNamespace[1]) !== false) {
+        if  (
+            \strpos($namespace,$this->packagesNamespace[0]) !== false ||
+            \strpos($namespace,$this->packagesNamespace[1]) !== false
+            ) {
             
             $namespace = \strtolower($namespace);                             
         }

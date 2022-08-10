@@ -216,7 +216,7 @@ trait PhpConfigFile
     {
         $keys = [];
         foreach ($data as $key => $value) {
-            \array_push($keys,\strlen($key));
+            $keys[] = \strlen($key);
         }
         $len = (\count($keys) == 0) ? 1 : \max($keys);
 

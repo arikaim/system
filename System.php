@@ -161,9 +161,13 @@ class System
     {
         $data = [];
         $items = \get_loaded_extensions(false);
+        
         foreach ($items as $item) {
             $version = Utils::formatVersion(Self::getPhpExtensionVersion($item));   
-            \array_push($data,['name' => $item,'version' => $version]);
+            $data[] = [
+                'name'    => $item,
+                'version' => $version
+            ];
         }
 
         return $data;
