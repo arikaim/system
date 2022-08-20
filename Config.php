@@ -47,6 +47,7 @@ class Config extends Collection
      */
     private $writeProtectedKeys = [];
 
+
     /**
      * Constructor
      *
