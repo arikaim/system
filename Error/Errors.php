@@ -66,7 +66,7 @@ class Errors extends Collection implements SystemErrorInterface
     {
         $data = File::readJsonFile(Path::CONFIG_PATH . $fileName);
         
-        return (\is_array($data) == true) ? $data : [];
+        return ($data === false) ? [] : $data;
     }
 
     /**
@@ -114,8 +114,6 @@ class Errors extends Collection implements SystemErrorInterface
      */
     public function getError(string $errorCode, array $params = [], ?string $default = null): ?string 
     {
-        $default = $default ?? SystemErrorInterface::UNKNOWN_ERROR_CODE;
-
         if ($this->loaded == false) {
             $this->loadErrors();
         }
