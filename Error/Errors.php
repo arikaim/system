@@ -119,8 +119,7 @@ class Errors extends Collection implements SystemErrorInterface
         }
        
         $error = $this->get($errorCode,null);
-        $error = (empty($error) == true) ? $this->get($default,null) : $error;
-
+       
         return (empty($error) == true) ? $default : Text::render($error['message'],$params);      
     }
 
