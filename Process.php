@@ -21,6 +21,23 @@ use Exception;
 class Process 
 {
     /**
+     *  Last error message
+     * 
+     *  @var string|null
+     */
+    static private $error = null;
+
+    /**
+     * Get last error
+     *
+     * @return string|null
+     */
+    public static function getLastError(): ?string
+    {
+        return Self::$error;
+    }
+
+    /**
      * Create process
      *
      * @param array|string $command
@@ -50,10 +67,16 @@ class Process
      */
     public static function run($command, array $env = [], $inheritEnv = true)
     {
+        Self::$error = null;
         $process = Self::create($command,$env);
         $process->run();
 
-        return ($process->isSuccessful() == true) ? $process->getOutput() : $process->getErrorOutput();          
+        if ($process->isSuccessful() == true) {
+            return $process->getOutput();
+        }
+        Self::$error = $process->getErrorOutput();
+
+        return false;       
     }
 
     /**
@@ -66,6 +89,7 @@ class Process
      */
     public static function start($command, callable $callback = null, ?array $env = null)
     {
+        Self::$error = null;
         $process = Self::create($command,$env);
         $process->start($callback);
     
@@ -93,6 +117,7 @@ class Process
     */
     public static function startBackground($command, $callback = null, array $env = [])
     {
+        Self::$error = null;
         $process = Self::create($command,$env);
         $process->disableOutput();
         $process->start($callback);
@@ -210,6 +235,8 @@ class Process
      */
     public static function runComposerCommand(string $command, bool $async = false, bool $realTimeOutput = false)
     {
+        Self::$error = null;
+        
         $command = 'php ' . Path::BIN_PATH . 'composer.phar ' . $command;
         $env = [
             'COMPOSER_HOME'      => Path::BIN_PATH,
