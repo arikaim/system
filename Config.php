@@ -47,17 +47,16 @@ class Config extends Collection
      */
     private $writeProtectedKeys = [];
 
-
     /**
      * Constructor
      *
      * @param string|null $fileName
-     * @param string $dir
+     * @param string|null $path
      */
-    public function __construct(?string $fileName = 'config.php', string $dir) 
+    public function __construct(?string $fileName = 'config.php', ?string $path = null) 
     {             
         $this->fileName = $fileName;
-        $this->configDir = $dir;
+        $this->configDir = $path ?? '';
        
         $data = $this->load($fileName);
         parent::__construct($data);   
