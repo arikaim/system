@@ -211,6 +211,19 @@ class System
     }
 
     /**
+     * Get opcache status
+     *
+     * @return array
+     */
+    public static function getOpcache(): array
+    {
+        return [
+            'config' => \opcache_get_configuration(),
+            'status' => \opcache_get_status()
+        ];
+    }
+
+    /**
      * Return PDO drivers list
      *
      * @return array
