@@ -58,6 +58,29 @@ class Process
     }
 
     /**
+     * Run shell command
+     *
+     * @param string      $command
+     * @param string|null $cwd
+     * @param array|null  $env
+     * @return mixed
+     */
+    public static function runShellCommand(string $command, ?string $cwd = null, ?array $env = null)
+    {
+        Self::$error = null;
+
+        $process = SProcess::fromShellCommandline($command,$cwd,$env);
+        $process->run();
+
+        if ($process->isSuccessful() == true) {
+            return $process->getOutput();
+        }
+        Self::$error = $process->getErrorOutput();
+
+        return false;       
+    }
+
+    /**
      * Run console command
      *
      * @param string|array $command
@@ -68,10 +91,11 @@ class Process
     public static function run($command, array $env = [], $inheritEnv = true)
     {
         Self::$error = null;
+
         $process = Self::create($command,$env);
         $process->run();
 
-        if ($process->isSuccessful() == true) {
+        if ($process->isSuccessful() == true) {           
             return $process->getOutput();
         }
         Self::$error = $process->getErrorOutput();
