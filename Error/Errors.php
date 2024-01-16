@@ -12,14 +12,13 @@ namespace Arikaim\Core\System\Error;
 use Arikaim\Core\Utils\Text;
 use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Path;
-use Arikaim\Core\Collection\Collection;
 
 use Arikaim\Core\Interfaces\SystemErrorInterface;
 
 /**
  * Errors
  */
-class Errors extends Collection implements SystemErrorInterface
+class Errors implements SystemErrorInterface
 {
     /**
      * Errors file name
@@ -44,12 +43,13 @@ class Errors extends Collection implements SystemErrorInterface
 
     /**
      * Constructor
-     * 
-     * @param array $systemErrors
+     *
+     * @param string  $fileName
+     * @param string  $consoleFile
+     * @param boolean $consoleApp
      */
     public function __construct(string $fileName, string $consoleFile, bool $consoleApp = false) 
-    {
-        //$this->data = $systemErrors; 
+    {    
         $this->fileName = $fileName;
         $this->consoleFile = $consoleFile;
         $this->consoleApp = $consoleApp;
@@ -62,7 +62,7 @@ class Errors extends Collection implements SystemErrorInterface
      * @param string $fileName
      * @return array
      */
-    public function loadValidationErrors($fileName = 'validation-errors.json'): array
+    public function loadValidationErrors(string $fileName = 'validation-errors.json'): array
     {
         $data = File::readJsonFile(Path::CONFIG_PATH . $fileName);
         
@@ -85,7 +85,7 @@ class Errors extends Collection implements SystemErrorInterface
             $errors = \array_merge($errors,$consoleErrors);
         } 
 
-        $this->data = $errors;
+        $this->errors = $errors;
         $this->loaded = true;
     }
 
@@ -101,7 +101,7 @@ class Errors extends Collection implements SystemErrorInterface
             $this->loadErrors();
         }
 
-        return $this->has($code);
+        return isset($this->errors[$code]);
     }
 
     /**
@@ -118,9 +118,9 @@ class Errors extends Collection implements SystemErrorInterface
             $this->loadErrors();
         }
        
-        $error = $this->get($errorCode,null);
+        $message = $this->errors[$code]['message'] ?? $default ?? '';
        
-        return (empty($error) == true) ? $default : Text::render($error['message'],$params);      
+        return Text::render($message,$params);      
     }
 
     /**

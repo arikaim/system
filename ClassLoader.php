@@ -79,12 +79,12 @@ class ClassLoader
     public function LoadClassFile(string $class): ?bool
     {
         $fileName = $this->getClassFileName($class);
-        if (\file_exists($fileName) == true) {
-            require_once $fileName;
+        try {
+            require_once ($fileName);
             return true;
-        }
-
-        return null;
+        } catch (\Exception $e) {          
+            return null;
+        }  
     }
 
     /**
