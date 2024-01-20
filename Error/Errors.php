@@ -118,7 +118,7 @@ class Errors implements SystemErrorInterface
             $this->loadErrors();
         }
        
-        $message = $this->errors[$code]['message'] ?? $default ?? '';
+        $message = $this->errors[$errorCode]['message'] ?? $default ?? '';
        
         return Text::render($message,$params);      
     }
