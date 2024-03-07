@@ -50,8 +50,9 @@ class ApplicationError implements ErrorHandlerInterface
         $errorDetails = PhpError::toArray($exception);
 
         switch ($renderType) {
-            case ErrorHandlerInterface::JSON_RENDER_TYPE:
-                return $this->renderJson($errorDetails);                            
+            case ErrorHandlerInterface::JSON_RENDER_TYPE: {
+                return $this->renderJson($errorDetails);   
+            }                             
         }
         
         return $this->page->renderApplicationError($errorDetails,null,'system')->getHtmlCode();     
@@ -63,10 +64,12 @@ class ApplicationError implements ErrorHandlerInterface
     * @param array $errorDetails 
     * @return string
     */
-    public function renderJson(array $errorDetails): string
+    public function renderJson(array $errorDetails, bool $short = true): string
     {     
         $response = new ApiResponse(); 
-        $response->field('details',PHPError::toString($errorDetails));
+        if ($short == false) {
+            $response->field('details',PHPError::toString($errorDetails));
+        }    
         $response->setError($errorDetails['message']);
         $response->setStatus('error');
         $response->setCode($errorDetails['code'] ?? 400);
