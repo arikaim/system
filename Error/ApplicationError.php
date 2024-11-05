@@ -67,10 +67,12 @@ class ApplicationError implements ErrorHandlerInterface
     public function renderJson(array $errorDetails, bool $short = true): string
     {     
         $response = new ApiResponse(); 
+        $message = PHPError::toString($errorDetails);
         if ($short == false) {
-            $response->field('details',PHPError::toString($errorDetails));
+            $response->field('details',$message);
         }    
-        $response->setError($errorDetails['message']);
+      
+        $response->setError($message);
         $response->setStatus('error');
         $response->setCode($errorDetails['code'] ?? 400);
        
