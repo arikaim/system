@@ -9,7 +9,6 @@
  */
 namespace Arikaim\Core\System\Traits;
 
-use Arikaim\Core\Utils\File;
 use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\Utils\Path;
 
@@ -243,11 +242,13 @@ trait PhpConfigFile
     */
     public function saveConfigFile(string $fileName, array $data): bool
     {
-        if (File::isWritable($fileName) == false) {
-            File::setWritable($fileName);
+        if (\is_writable($fileName) == false) {
+            @chmod($fileName,0777);
         }
+
         $content = $this->getFileContent($data);  
-     
-        return (bool)File::write($fileName,$content);       
+        $result = \file_put_contents($fileName,$content);
+        
+        return ($result !== false);
     }
 }
