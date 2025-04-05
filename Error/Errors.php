@@ -35,6 +35,12 @@ class Errors implements SystemErrorInterface
     protected $consoleFile;
 
     /**
+     * Errors list
+     * @var array
+     */
+    protected $errors = [];
+
+    /**
      * consoleApp
      * @var bool
      */
@@ -60,6 +66,7 @@ class Errors implements SystemErrorInterface
         $this->consoleFile = $consoleFile;
         $this->consoleApp = $consoleApp;
         $this->loaded = false;
+        $this->errors = [];
     }
 
     /**
