@@ -35,6 +35,12 @@ class Errors implements SystemErrorInterface
     protected $consoleFile;
 
     /**
+     * consoleApp
+     * @var bool
+     */
+    public $consoleApp;
+
+    /**
      * Error file loaded
      *
      * @var bool
