@@ -63,6 +63,7 @@ class Config extends Collection
 
         $this->setComment('database settings','db');
         $this->setComment('application settings','settings');
+        $this->setComment('templates language','language');
     }
     
     /**
@@ -145,12 +146,12 @@ class Config extends Collection
      * Read config file
      *
      * @param string $fileName
-     * @param string $configDir
+     * @param string|null $configDir
      * @return Collection
      */
-    public static function read(string $fileName, string $configDir) 
+    public static function read(string $fileName, ?string $configDir = null) 
     {
-        return new Self($fileName,null,$configDir);      
+        return new Self($fileName,$configDir);      
     }
 
     /**
